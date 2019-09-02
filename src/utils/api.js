@@ -43,10 +43,58 @@ const batchDeleteTodo = (todoIds) => {
   })
 }
 
+const createStudent = (data) => {
+  return fetch('/.netlify/functions/students-create', {
+    body: JSON.stringify(data),
+    method: 'POST'
+  }).then(response => {
+    return response.json()
+  })
+}
+
+const readAllStudents = () => {
+  return fetch('/.netlify/functions/students-read-all').then((response) => {
+    return response.json()
+  })
+}
+
+const updateStudent = (studentId, data) => {
+  return fetch(`/.netlify/functions/students-update/${studentId}`, {
+    body: JSON.stringify(data),
+    method: 'POST'
+  }).then(response => {
+    return response.json()
+  })
+}
+
+const deleteStudent = (studentId) => {
+  return fetch(`/.netlify/functions/students-delete/${studentId}`, {
+    method: 'POST',
+  }).then(response => {
+    return response.json()
+  })
+}
+
+const batchDeleteStudents = (studentIds) => {
+  return fetch(`/.netlify/functions/students-delete-batch`, {
+    body: JSON.stringify({
+      ids: studentIds
+    }),
+    method: 'POST'
+  }).then(response => {
+    return response.json()
+  })
+}
+
 export default {
   create: create,
   readAll: readAll,
   update: update,
   delete: deleteTodo,
-  batchDelete: batchDeleteTodo
+  batchDelete: batchDeleteTodo,
+  createStudent: createStudent,
+  readAllStudents: readAllStudents,
+  updateStudent: updateStudent,
+  deleteStudent: deleteStudent,
+  batchDeleteStudents: batchDeleteStudents
 }

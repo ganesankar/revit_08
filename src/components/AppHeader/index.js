@@ -1,43 +1,90 @@
 import React from 'react'
-import deployButton from '../../assets/deploy-to-netlify.svg'
-import logo from '../../assets/logo.svg'
-import github from '../../assets/github.svg'
 import styles from './AppHeader.css' // eslint-disable-line
+import { Link } from "react-router-dom";
+// reactstrap components
+import {
+  Collapse,
+  NavbarBrand,
+  Navbar,
+  NavItem,
+  NavLink,
+  Nav,
+  Container,
+  Row,
+  Col
+} from "reactstrap";
 
 const AppHeader = (props) => {
   return (
-    <header className='app-header'>
-      <div className='app-title-wrapper'>
-        <div className='app-title-wrapper'>
-          <div className='app-left-nav'>
-            <img src={logo} className='app-logo' alt='logo' />
-            <div className='app-title-text'>
-              <h1 className='app-title'>Netlify + Fauna DB</h1>
-              <p className='app-intro'>
-                Using FaunaDB & Netlify functions
-              </p>
+    <Navbar
+        className={"fixed-top "}
+        color-on-scroll="100"
+        expand="lg"
+      >
+        <Container>
+          <div className="navbar-translate">
+            
+          </div>
+          
+            <div className="navbar-collapse-header">
+              <Row>
+                <Col className="collapse-brand" xs="6">
+                  <a href="#pablo" onClick={e => e.preventDefault()}>
+                    BLK•React
+                  </a>
+                </Col>
+                <Col className="collapse-close text-right" xs="6">
+                
+                </Col>
+              </Row>
             </div>
-          </div>
-        </div>
-        <div className='deploy-button-wrapper'>
-          <a
-            target='_blank'
-            rel='noopener noreferrer'
-            href='https://app.netlify.com/start/deploy?repository=https://github.com/netlify/netlify-faunadb-example'>
-            <img src={deployButton} className='deploy-button' alt='deploy to netlify' />
-          </a>
-          <div className='view-src'>
-            <a
-              target='_blank'
-              rel='noopener noreferrer'
-              href='https://github.com/netlify/netlify-faunadb-example'>
-              <img className='github-icon' src={github} alt='view repo on github' />
-              View the source Luke
-            </a>
-          </div>
-        </div>
-      </div>
-    </header>
+            <Nav navbar>
+              <NavItem className="p-0">
+                <NavLink
+                  data-placement="bottom"
+                  href="https://twitter.com/CreativeTim"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                  title="Follow us on Twitter"
+                >
+                  <i className="fab fa-twitter" />
+                  <p className="d-lg-none d-xl-none">Twitter</p>
+                </NavLink>
+              </NavItem>
+              <NavItem className="p-0">
+                <NavLink
+                  data-placement="bottom"
+                  href="https://www.facebook.com/CreativeTim"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                  title="Like us on Facebook"
+                >
+                  <i className="fab fa-facebook-square" />
+                  <p className="d-lg-none d-xl-none">Facebook</p>
+                </NavLink>
+              </NavItem>
+              <NavItem className="p-0">
+                <NavLink
+                  data-placement="bottom"
+                  href="https://www.instagram.com/CreativeTimOfficial"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                  title="Follow us on Instagram"
+                >
+                  <i className="fab fa-instagram" />
+                  <p className="d-lg-none d-xl-none">Instagram</p>
+                </NavLink>
+              </NavItem>
+              <NavItem>
+              </NavItem>
+              <NavItem>
+                <NavLink href="https://github.com/creativetimofficial/blk-design-system-react/issues">
+                  Have an issue?
+                </NavLink>
+              </NavItem>
+            </Nav>
+        </Container>
+      </Navbar>
   )
 }
 

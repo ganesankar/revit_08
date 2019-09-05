@@ -1,5 +1,10 @@
 import React, { Component } from "react";
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter ,  Row,
+  Col ,Label,
+  FormGroup,
+  Form,
+  Input,
+  FormText , Container} from 'reactstrap';
 import SettingsMenu from "./../components/SettingsMenu";
 import SettingsIcon from "./../components/SettingsIcon";
 import UserListCard from "./../components/list/userListCard";
@@ -8,9 +13,42 @@ import api from "./../utils/api";
 import sortByDate from "./../utils/sortByDate";
 import isLocalHost from "./../utils/isLocalHost";
 
+const userbase = {
+            "roll": 0,
+            "spr": 0,
+            "designation": "",
+            "verified": true,
+            "name": "",
+            "email": "",
+            "othername": "",
+            "dob": "",
+            "anniversary": "",
+            "married": false,
+            "native": "",
+            "location": "",
+            "work": "",
+            "social":{
+            "facebook": "",
+            "instagram": "",
+            "twitter": "",
+            "blogger": "",
+            "skype": "",
+            "whatsapp": "",
+            "github": "",
+            "google": "",
+            "medium": "",
+            "microsoft": "",
+            "pinterest": "",
+            "quora": "",
+            "youtube": ""
+        },
+            "url": "",
+            "flagimg": ""
+        };
 export default class Students extends Component {
   state = {
     todos: [],
+	  student: {},
     studentModal: false,
     showMenu: false
   };
@@ -140,39 +178,6 @@ export default class Students extends Component {
         });
       });
   };
-  handleStudentCheckbox = event => {
-    const { replists } = this.state;
-    const { target } = event;
-    const replistCompleted = target.checked;
-    const replistId = target.dataset.id;
-
-    const updatedStudents = replists.map((replist, i) => {
-      const { data } = replist;
-      const id = getStudentId(replist);
-      if (id === replistId && data.completed !== replistCompleted) {
-        data.completed = replistCompleted;
-      }
-      return replist;
-    });
-
-    this.setState(
-      {
-        replists: updatedStudents
-      },
-      () => {
-        api
-          .updateStudent(replistId, {
-            completed: replistCompleted
-          })
-          .then(() => {
-            console.log(`update replist ${replistId}`, replistCompleted);
-          })
-          .catch(e => {
-            console.log("An API error occurred", e);
-          });
-      }
-    );
-  };
   updateStudentTitle = (event, currentValue) => {
     let isDifferent = false;
     const replistId = event.target.dataset.key;
@@ -267,11 +272,24 @@ export default class Students extends Component {
       showMenu: true
     });
   };
+  addNewStudentModal = () => {
+    console.log("openStudentModal")
+    this.setState({
+      student: {...userbase},		
+      studentModal: true
+    });
+  };
   openStudentModal = (data) => {
     console.log("openStudentModal", data)
     this.setState({
       studentModal: true,
       studentModelData: data
+    });
+  };
+
+  onChange = e => {
+    this.setState({
+      [e.target.name]: e.target.value
     });
   };
   renderStudents() {
@@ -310,6 +328,7 @@ export default class Students extends Component {
             editLink={true}
             openStudentModal={this.openStudentModal}
             editPath="/student/edit/"
+            viewPath="/student/"
           />
         </div>
       );
@@ -319,27 +338,26 @@ export default class Students extends Component {
     return (
       <div className="app">
         <div className="container">
+			
+			<Row>
+                <Col md="4">
+                  <hr className="line-info" />
+                  <h1>
+                    Students List{" "}
+                    <span className="text-info">from the class </span>
+                  </h1>
+                </Col>
+              </Row>
           <h2>
-            Create
-            <SettingsIcon onClick={this.openModal} className="mobile-toggle" />
-          </h2>
-          <form className="todo-create-wrapper" onSubmit={this.saveTodo}>
-            <input
-              className="todo-create-input"
-              placeholder="Add a todo item"
-              name="name"
-              ref={el => (this.inputElement = el)}
-              autoComplete="off"
-              style={{ marginRight: 20 }}
-            />
-            <div className="todo-actions">
-              <button className="todo-create-button">Create todo</button>
-              <SettingsIcon
+            
+			  <Button color="danger" onClick={this.toggle}>NEW</Button>
+			  <SettingsIcon
                 onClick={this.openModal}
                 className="desktop-toggle"
               />
-            </div>
-          </form>
+            <SettingsIcon onClick={this.openModal} className="mobile-toggle" />
+          </h2>
+          
           <div className="row">{this.renderStudents()}</div>
         </div>
         <SettingsMenu
@@ -347,14 +365,127 @@ export default class Students extends Component {
           handleModalClose={this.closeModal}
           handleClearCompleted={this.clearCompleted}
         />
-        <Button color="danger" onClick={this.toggle}>{this.props.buttonLabel}</Button>
+        
         <Modal isOpen={this.state.studentModal} toggle={this.toggle} className="modal-xl">
           <ModalHeader toggle={this.toggle}>Modal title</ModalHeader>
           <ModalBody>
-          <UserItemCard
-           
-           student={this.state.studentModelData}
-          />  </ModalBody>
+         <form className="todo-create-wrapper" onSubmit={this.saveTodo}>
+			 <Container fluid>
+			 <Row>
+			 <Col md="6">
+                            <FormGroup>
+                              <label>Roll No</label>
+                              <Input type="text"  value={this.state.roll || ''}  name="roll" onChange={this.onChange}/>
+                            </FormGroup>
+                          </Col>
+                          <Col md="6">
+                             <FormGroup>
+                              <label>SPR No</label>
+                              <Input type="text"  value={this.state.spr || ''}  name="spr" onChange={this.onChange}/>
+                            </FormGroup>
+                          </Col>
+                        </Row>
+			 <Row>
+			 <Col md="6">
+                            <FormGroup>
+                              <label>Name</label>
+                              <Input type="text"  value={this.state.name || ''}  name="name" onChange={this.onChange}/>
+                            </FormGroup>
+                          </Col>
+                          <Col md="6">
+                             <FormGroup>
+                              <label>Nick Name</label>
+                              <Input type="text"  value={this.state.othername || ''}  name="othername" onChange={this.onChange}/>
+                            </FormGroup>
+                          </Col>
+                        </Row>
+			  <Row>
+			 <Col md="6">
+                            <FormGroup>
+                              <label>email</label>
+                              <Input type="text"  value={this.state.email || ''}  name="email" onChange={this.onChange}/>
+                            </FormGroup>
+                          </Col>
+                          
+                        </Row>
+				  <Row>
+			 <Col md="6">
+                            <FormGroup>
+                              <label>work</label>
+                              <Input type="text"  value={this.state.work || ''}  name="work" onChange={this.onChange}/>
+                            </FormGroup>
+                          </Col>
+                          <Col md="6">
+                             <FormGroup>
+                              <label>designation </label>
+                              <Input type="text"  value={this.state.designation || ''}  name="designation" onChange={this.onChange}/>
+                            </FormGroup>
+                          </Col>
+                        </Row>
+				   <Row>
+			 <Col md="6">
+                            <FormGroup>
+                              <label>dob</label>
+                              <Input type="date"  value={this.state.dob || ''}  name="work" onChange={this.onChange}/>
+                            </FormGroup>
+                          </Col>
+                          <Col md="6">
+                             <FormGroup>
+                              <label>designation </label>
+                              <Input type="date"  value={this.state.anniversary || ''}  name="anniversary" onChange={this.onChange}/>
+                            </FormGroup>
+                          </Col>
+                        </Row>
+				 <Row>
+			 <Col md="6">
+                            <FormGroup>
+                              <label>work</label>
+                              <Input type="text"  value={this.state.work || ''}  name="work" onChange={this.onChange}/>
+                            </FormGroup>
+                          </Col>
+                          <Col md="6">
+                             <FormGroup>
+                              <label>designation </label>
+                              <Input type="text"  value={this.state.designation || ''}  name="designation" onChange={this.onChange}/>
+                            </FormGroup>
+                          </Col>
+                        </Row>
+				  <Row>
+			 <Col md="6">
+                            <FormGroup>
+                              <label>native</label>
+                              <Input type="text"  value={this.state.native || ''}  name="native" onChange={this.onChange}/>
+                            </FormGroup>
+                          </Col>
+                          <Col md="6">
+                             <FormGroup>
+                              <label>location </label>
+                              <Input type="text"  value={this.state.location || ''}  name="location" onChange={this.onChange}/>
+                            </FormGroup>
+                          </Col>
+                        </Row>
+				  <Row>
+			 <Col md="6">
+                            <FormGroup>
+                              <label>native</label>
+                              <input
+              className="todo-create-input"
+              placeholder="Add a todo item"
+              name="name"
+              ref={el => (this.inputElement = el)}
+              autoComplete="off"
+              style={{ marginRight: 20 }}
+            />
+                            </FormGroup>
+                          </Col>
+                          <Col md="6">
+                             <button className="todo-create-button">Create todo</button>
+                          </Col>
+                        </Row>
+			 </Container>
+            
+         
+          </form> </ModalBody>
          
         </Modal>
       </div>

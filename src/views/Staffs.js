@@ -29,7 +29,7 @@ import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-balham-dark.css";
 import UserListCard from "./../components/list/userListCard";
-import UserItemCard from "./../components/item/userItemCard";
+import StaffItemCard from "./../components/item/staffItemCard";
 import FormGroupInput from "./../components/form/formGroupInput";
 import CellLinkRenderer from "./../components/grid/cellLinkRender";
 
@@ -67,17 +67,27 @@ const userbase = {
     quora: "",
     youtube: ""
   },
+  subjects: {
+    s1: "",
+    s2: "",
+    s3: "",
+    s4: "",
+    s5: "",
+    s6: "",
+    s7: "",
+    s8: ""
+  },
   url: "",
   flagimg: ""
 };
-export default class Students extends Component {
+export default class Staffs extends Component {
   state = {
     todos: [],
     context: { componentParent: this },
-    student: {},
-    studentModelData: { ...userbase },
-    studentModal: false,
-    studentViewModal: false,
+    staff: {},
+    staffModelData: { ...userbase },
+    staffModal: false,
+    staffViewModal: false,
     showMenu: false,
     iconTabs: 1,
     textTabs: 4,
@@ -141,7 +151,7 @@ export default class Students extends Component {
   };
   componentDidMount() {
     // Fetch all todos
-    api.readAllStudents().then(replists => {
+    api.readAllStaffs().then(replists => {
       if (replists.message === "unauthorized") {
         if (isLocalHost()) {
           alert(
@@ -155,45 +165,46 @@ export default class Students extends Component {
         return false;
       }
       const optimisedData = [];
-      if (replists.length > 0) {
+      if(replists.length > 0){
         replists.forEach(function(item, index) {
           let itemis = item.data;
           itemis.act = index;
-          itemis.id = getStudentId(item);
+          itemis.id = getStaffId(item);
           optimisedData.push(itemis);
         });
         this.setState({
           replists: replists,
           gridData: optimisedData
         });
-      } else {
+      }else{
         this.setState({
           replists: [],
           gridData: []
         });
       }
+      
     });
   }
   toggle = () => {
-    const { studentModal } = this.state;
+    const { staffModal } = this.state;
     this.setState({
-      studentModal: !studentModal
+      staffModal: !staffModal
     });
   };
 
-  saveStudent = () => {
-    const { studentModelData } = this.state;
+  saveStaff = () => {
+    const { staffModelData } = this.state;
 
-    const newStudentArray = [
+    const newStaffArray = [
       {
-        data: studentModelData,
+        data: staffModelData,
         ts: new Date().getTime() * 10000
       }
     ];
 
-    if (studentModelData.id) {
+    if (staffModelData.id) {
       api
-        .updateStudent(studentModelData.id, studentModelData)
+        .updateStaff(staffModelData.id, staffModelData)
         .then(() => {
           ToastsStore.success(`Profile Changes Updated!`);
         })
@@ -203,7 +214,7 @@ export default class Students extends Component {
         });
     } else {
       api
-        .createStudent(studentModelData)
+        .createStaff(staffModelData)
         .then(response => {
           ToastsStore.success(`Profile Created Succesfully!`);
         })
@@ -213,17 +224,17 @@ export default class Students extends Component {
         });
     }
   };
-  deleteStudent = e => {
+  deleteStaff = e => {
     const { replists } = this.state;
     const replistId = e.target.dataset.id;
 
     // Optimistically remove replist from UI
-    const filteredStudents = replists.reduce(
+    const filteredStaffs = replists.reduce(
       (acc, current) => {
-        const currentId = getStudentId(current);
+        const currentId = getStaffId(current);
         if (currentId === replistId) {
           // save item being removed for rollback
-          acc.rollbackStudent = current;
+          acc.rollbackStaff = current;
           return acc;
         }
         // filter deleted replist out of the replists list
@@ -231,18 +242,18 @@ export default class Students extends Component {
         return acc;
       },
       {
-        rollbackStudent: {},
+        rollbackStaff: {},
         optimisticState: []
       }
     );
 
     this.setState({
-      replists: filteredStudents.optimisticState
+      replists: filteredStaffs.optimisticState
     });
 
     // Make API request to delete replist
     api
-      .deleteStudent(replistId)
+      .deleteStaff(replistId)
       .then(() => {
         console.log(`deleted replist id ${replistId}`);
       })
@@ -250,47 +261,47 @@ export default class Students extends Component {
         console.log(`There was an error removing ${replistId}`, e);
         // Add item removed back to list
         this.setState({
-          replists: filteredStudents.optimisticState.concat(
-            filteredStudents.rollbackStudent
+          replists: filteredStaffs.optimisticState.concat(
+            filteredStaffs.rollbackStaff
           )
         });
       });
   };
 
-  newStudentModal = () => {
-    const studentItem = { ...userbase };
+  newStaffModal = () => {
+    const staffItem = { ...userbase };
 
     this.setState({
-      studentModal: true,
-      studentModelData: studentItem
+      staffModal: true,
+      staffModelData: staffItem
     });
   };
   openUserModal = id => {
     
     console.log('openUserModal' , id);
-    const studentItem = this.state.gridData.find(o => o.id === id);
-    if (Object.keys(studentItem.social).length === 0) {
-      studentItem.social = { ...userbase.social };
+    const staffItem = this.state.gridData.find(o => o.id === id);
+    if (Object.keys(staffItem.social).length === 0) {
+      staffItem.social = { ...userbase.social };
     }
-    console.log(studentItem);
+    console.log(staffItem);
     this.setState({
-      studentModal: true,
-      studentModelData: studentItem
+      staffModal: true,
+      staffModelData: staffItem
     });
   };
   openUserView = id => {
     console.log('openUserView' , id);
-    const { studentViewModal } = this.state;
-    const studentItem = this.state.gridData.find(o => o.id === id);
+    const { staffViewModal } = this.state;
+    const staffItem = this.state.gridData.find(o => o.id === id);
     this.setState({
-      studentViewModal: !studentViewModal,
-      studentModelData: studentItem
+      staffViewModal: !staffViewModal,
+      staffModelData: staffItem
     });
   };
-  toogleStudentView = () => {
-    const { studentViewModal } = this.state;
+  toogleStaffView = () => {
+    const { staffViewModal } = this.state;
     this.setState({
-      studentViewModal: !studentViewModal
+      staffViewModal: !staffViewModal
     });
   };
 
@@ -301,29 +312,32 @@ export default class Students extends Component {
     });
   };
   onInputChange = (na, val) => {
-    const { studentModelData } = this.state;
-    studentModelData[na] = val;
-    this.setState({ studentModelData });
+    const { staffModelData } = this.state;
+    staffModelData[na] = val;
+    this.setState({ staffModelData });
   };
   onInputSocialChange = (na, val) => {
-    console.log(`SO  ${na} ${val}`);
-    const { studentModelData } = this.state;
-    studentModelData.social[na] = val;
-    this.setState({ studentModelData });
+    const { staffModelData } = this.state;
+    staffModelData.social[na] = val;
+    this.setState({ staffModelData });
   };
-
+  onInputSubjectChange = (na, val) => {
+    const { staffModelData } = this.state;
+    staffModelData.subjects[na] = val;
+    this.setState({ staffModelData });
+  };
   fileChangedHandler = files => {
     console.log("file", files);
 
-    const { studentModelData } = this.state;
+    const { staffModelData } = this.state;
     if (files.size) {
       const fileSize = files.size.replace("kB", "").trim();
       console.log("fileSize", fileSize);
       if (Number(fileSize) > 1000) {
         ToastsStore.error("Upload Image less than 1 MB");
       } else {
-        studentModelData.flagimg = files;
-        this.setState({ studentModelData });
+        staffModelData.flagimg = files;
+        this.setState({ staffModelData });
         ToastsStore.success(`${files.name} updated as profile image`);
       }
     }
@@ -337,7 +351,7 @@ export default class Students extends Component {
   download = () => {
     console.log("coming soon");
   };
-  renderStudents() {
+  renderStaffs() {
     const { replists } = this.state;
 
     if (!replists || !replists.length) {
@@ -352,12 +366,12 @@ export default class Students extends Component {
 
     return replistsByDate.map((replist, i) => {
       const { data, ref } = replist;
-      const id = getStudentId(replist);
+      const id = getStaffId(replist);
       // only show delete button after create API response returns
       let deleteButton;
       if (ref) {
         deleteButton = (
-          <button data-id={id} onClick={this.deleteStudent}>
+          <button data-id={id} onClick={this.deleteStaff}>
             delete
           </button>
         );
@@ -372,8 +386,8 @@ export default class Students extends Component {
             viewLink={true}
             editLink={true}
             openUserModal={this.openUserModal}
-            editPath="/student/edit/"
-            viewPath="/student/"
+            editPath="/staff/edit/"
+            viewPath="/staff/"
           />
         </div>
       );
@@ -388,14 +402,14 @@ export default class Students extends Component {
             <Col md="4">
               <hr className="line-info" />
               <h1>
-                Students List
-                <br /> <span className="text-info">from the class </span>
+                Staffs List
+                <br /> <span className="text-info"> across departments</span>
               </h1>
             </Col>
             <Col md="4"></Col>
             <Col md="4">
               <div className="text-right pt-5">
-                <Button color="danger" onClick={this.newStudentModal}>
+                <Button color="danger" onClick={this.newStaffModal}>
                   NEW
                 </Button>
                 <Button color="danger" onClick={this.download}>
@@ -406,7 +420,7 @@ export default class Students extends Component {
           </Row>
 
           <div className="row">
-            {/*this.renderStudents()*/}
+            {/*this.renderStaffs()*/}
             <Card className="card-coin card-plain">
               <CardBody>
                 <div
@@ -429,17 +443,17 @@ export default class Students extends Component {
         </div>
 
         <Modal
-          isOpen={this.state.studentModal}
+          isOpen={this.state.staffModal}
           toggle={this.toggle}
           className="modal-xl"
         >
           <ModalHeader toggle={this.toggle}>
             <hr className="line-info" />
             <h3>
-              Students Edit{" "}
+              Staffs Edit{" "}
               <span className="text-info">
                 {" "}
-                {this.state.studentModelData.name}{" "}
+                {this.state.staffModelData.name}{" "}
               </span>
             </h3>
           </ModalHeader>
@@ -448,7 +462,7 @@ export default class Students extends Component {
               className="todo-create-wrapper"
               onSubmit={e => {
                 e.preventDefault();
-                this.saveStudent();
+                this.saveStaff();
               }}
             >
               <Container fluid>
@@ -475,6 +489,16 @@ export default class Students extends Component {
                           Social
                         </NavLink>
                       </NavItem>
+                      <NavItem>
+                        <NavLink
+                          className={classnames({
+                            active: this.state.textTabs === 6
+                          })}
+                          onClick={e => this.toggleTabs(e, "textTabs", 6)}
+                        >
+                          Subjects taken
+                        </NavLink>
+                      </NavItem>
                     </Nav>
                     <TabContent
                       className="tab-space"
@@ -482,30 +506,11 @@ export default class Students extends Component {
                     >
                       <TabPane tabId="link4">
                         <Container fluid>
+                       
                           <Row>
                             <Col md="6">
                               <FormGroupInput
-                                nameValue={this.state.studentModelData.roll}
-                                label="Roll No"
-                                name="roll"
-                                type="number"
-                                onInputChange={this.onInputChange}
-                              />
-                            </Col>
-                            <Col md="6">
-                              <FormGroupInput
-                                nameValue={this.state.studentModelData.spr}
-                                label="SPR No"
-                                name="spr"
-                                type="number"
-                                onInputChange={this.onInputChange}
-                              />
-                            </Col>
-                          </Row>
-                          <Row>
-                            <Col md="6">
-                              <FormGroupInput
-                                nameValue={this.state.studentModelData.name}
+                                nameValue={this.state.staffModelData.name}
                                 label="Name"
                                 name="name"
                                 onInputChange={this.onInputChange}
@@ -514,7 +519,7 @@ export default class Students extends Component {
                             <Col md="6">
                               <FormGroupInput
                                 nameValue={
-                                  this.state.studentModelData.othername
+                                  this.state.staffModelData.othername
                                 }
                                 label="Nick Name"
                                 name="othername"
@@ -525,7 +530,7 @@ export default class Students extends Component {
                           <Row>
                             <Col md="6">
                               <FormGroupInput
-                                nameValue={this.state.studentModelData.email}
+                                nameValue={this.state.staffModelData.email}
                                 label="E Mail"
                                 name="email"
                                 onInputChange={this.onInputChange}
@@ -535,7 +540,7 @@ export default class Students extends Component {
                           <Row>
                             <Col md="6">
                               <FormGroupInput
-                                nameValue={this.state.studentModelData.work}
+                                nameValue={this.state.staffModelData.work}
                                 label="Work"
                                 name="work"
                                 onInputChange={this.onInputChange}
@@ -544,7 +549,7 @@ export default class Students extends Component {
                             <Col md="6">
                               <FormGroupInput
                                 nameValue={
-                                  this.state.studentModelData.designation
+                                  this.state.staffModelData.designation
                                 }
                                 label="Designation"
                                 name="designation"
@@ -555,7 +560,7 @@ export default class Students extends Component {
                           <Row>
                             <Col md="6">
                               <FormGroupInput
-                                nameValue={this.state.studentModelData.dob}
+                                nameValue={this.state.staffModelData.dob}
                                 label="Date of Birth"
                                 name="dob"
                                 type="date"
@@ -565,7 +570,7 @@ export default class Students extends Component {
                             <Col md="6">
                               <FormGroupInput
                                 nameValue={
-                                  this.state.studentModelData.anniversary
+                                  this.state.staffModelData.anniversary
                                 }
                                 label="Anniversary"
                                 name="anniversary"
@@ -578,7 +583,7 @@ export default class Students extends Component {
                           <Row>
                             <Col md="6">
                               <FormGroupInput
-                                nameValue={this.state.studentModelData.native}
+                                nameValue={this.state.staffModelData.native}
                                 label="Native"
                                 name="native"
                                 onInputChange={this.onInputChange}
@@ -586,7 +591,7 @@ export default class Students extends Component {
                             </Col>
                             <Col md="6">
                               <FormGroupInput
-                                nameValue={this.state.studentModelData.location}
+                                nameValue={this.state.staffModelData.location}
                                 label="Current Location"
                                 name="location"
                                 onInputChange={this.onInputChange}
@@ -601,7 +606,7 @@ export default class Students extends Component {
                             <Col md="6">
                               <FormGroupInput
                                 nameValue={
-                                  this.state.studentModelData.social.facebook
+                                  this.state.staffModelData.social.facebook
                                 }
                                 label="Facebook"
                                 name="facebook"
@@ -611,7 +616,7 @@ export default class Students extends Component {
                             <Col md="6">
                               <FormGroupInput
                                 nameValue={
-                                  this.state.studentModelData.social.instagram
+                                  this.state.staffModelData.social.instagram
                                 }
                                 label="instagram"
                                 name="instagram"
@@ -623,7 +628,7 @@ export default class Students extends Component {
                             <Col md="6">
                               <FormGroupInput
                                 nameValue={
-                                  this.state.studentModelData.social.twitter
+                                  this.state.staffModelData.social.twitter
                                 }
                                 label="twitter"
                                 name="twitter"
@@ -633,7 +638,7 @@ export default class Students extends Component {
                             <Col md="6">
                               <FormGroupInput
                                 nameValue={
-                                  this.state.studentModelData.social.blogger
+                                  this.state.staffModelData.social.blogger
                                 }
                                 label="Blog/ Website"
                                 name="blogger"
@@ -645,7 +650,7 @@ export default class Students extends Component {
                             <Col md="6">
                               <FormGroupInput
                                 nameValue={
-                                  this.state.studentModelData.social.skype
+                                  this.state.staffModelData.social.skype
                                 }
                                 label="skype"
                                 name="skype"
@@ -655,7 +660,7 @@ export default class Students extends Component {
                             <Col md="6">
                               <FormGroupInput
                                 nameValue={
-                                  this.state.studentModelData.social.whatsapp
+                                  this.state.staffModelData.social.whatsapp
                                 }
                                 label="whatsapp"
                                 name="whatsapp"
@@ -667,7 +672,7 @@ export default class Students extends Component {
                             <Col md="6">
                               <FormGroupInput
                                 nameValue={
-                                  this.state.studentModelData.social.github
+                                  this.state.staffModelData.social.github
                                 }
                                 label="github"
                                 name="github"
@@ -677,7 +682,7 @@ export default class Students extends Component {
                             <Col md="6">
                               <FormGroupInput
                                 nameValue={
-                                  this.state.studentModelData.social.google
+                                  this.state.staffModelData.social.google
                                 }
                                 label="google"
                                 name="google"
@@ -689,7 +694,7 @@ export default class Students extends Component {
                             <Col md="6">
                               <FormGroupInput
                                 nameValue={
-                                  this.state.studentModelData.social.medium
+                                  this.state.staffModelData.social.medium
                                 }
                                 label="medium"
                                 name="medium"
@@ -699,7 +704,7 @@ export default class Students extends Component {
                             <Col md="6">
                               <FormGroupInput
                                 nameValue={
-                                  this.state.studentModelData.social.microsoft
+                                  this.state.staffModelData.social.microsoft
                                 }
                                 label="microsoft"
                                 name="microsoft"
@@ -712,7 +717,7 @@ export default class Students extends Component {
                             <Col md="6">
                               <FormGroupInput
                                 nameValue={
-                                  this.state.studentModelData.social.pinterest
+                                  this.state.staffModelData.social.pinterest
                                 }
                                 label="pinterest"
                                 name="pinterest"
@@ -722,7 +727,7 @@ export default class Students extends Component {
                             <Col md="6">
                               <FormGroupInput
                                 nameValue={
-                                  this.state.studentModelData.social.quora
+                                  this.state.staffModelData.social.quora
                                 }
                                 label="quora"
                                 name="quora"
@@ -734,7 +739,7 @@ export default class Students extends Component {
                             <Col md="6">
                               <FormGroupInput
                                 nameValue={
-                                  this.state.studentModelData.social.linkedin
+                                  this.state.staffModelData.social.linkedin
                                 }
                                 label="linkedin"
                                 name="linkedin"
@@ -744,7 +749,7 @@ export default class Students extends Component {
                             <Col md="6">
                               <FormGroupInput
                                 nameValue={
-                                  this.state.studentModelData.social.youtube
+                                  this.state.staffModelData.social.youtube
                                 }
                                 label="youtube"
                                 name="youtube"
@@ -752,6 +757,99 @@ export default class Students extends Component {
                               />
                             </Col>
                           </Row>
+                        </Container>
+                      </TabPane>
+                      <TabPane tabId="link6">
+                        <Container fluid>
+                          <Row>
+                            <Col md="6">
+                              <FormGroupInput
+                                nameValue={
+                                  this.state.staffModelData.subjects.s1
+                                }
+                                label="Semester 1"
+                                name="s1"
+                                onInputChange={this.onInputSubjectChange}
+                              />
+                            </Col>
+                            <Col md="6">
+                            <FormGroupInput
+                                nameValue={
+                                  this.state.staffModelData.subjects.s2
+                                }
+                                label="Semester 2"
+                                name="s2"
+                                onInputChange={this.onInputSubjectChange}
+                              />
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col md="6">
+                            <FormGroupInput
+                                nameValue={
+                                  this.state.staffModelData.subjects.s3
+                                }
+                                label="Semester 3"
+                                name="s3"
+                                onInputChange={this.onInputSubjectChange}
+                              />
+                            </Col>
+                            <Col md="6">
+                            <FormGroupInput
+                                nameValue={
+                                  this.state.staffModelData.subjects.s4
+                                }
+                                label="Semester 4"
+                                name="s4"
+                                onInputChange={this.onInputSubjectChange}
+                              />
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col md="6">
+                            <FormGroupInput
+                                nameValue={
+                                  this.state.staffModelData.subjects.s5
+                                }
+                                label="Semester 5"
+                                name="s5"
+                                onInputChange={this.onInputSubjectChange}
+                              />
+                            </Col>
+                            <Col md="6">
+                            <FormGroupInput
+                                nameValue={
+                                  this.state.staffModelData.subjects.s6
+                                }
+                                label="Semester 6"
+                                name="s6"
+                                onInputChange={this.onInputSubjectChange}
+                              />
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col md="6">
+                            <FormGroupInput
+                                nameValue={
+                                  this.state.staffModelData.subjects.s7
+                                }
+                                label="Semester 7"
+                                name="s7"
+                                onInputChange={this.onInputSubjectChange}
+                              />
+                            </Col>
+                            <Col md="6">
+                            <FormGroupInput
+                                nameValue={
+                                  this.state.staffModelData.subjects.s8
+                                }
+                                label="Semester 8"
+                                name="s8"
+                                onInputChange={this.onInputSubjectChange}
+                              />
+                            </Col>
+                          </Row>
+                          
                         </Container>
                       </TabPane>
                     </TabContent>
@@ -766,10 +864,10 @@ export default class Students extends Component {
                     </div>
                     <Card raised>
                       <div className="cmsImageDiv">
-                        {this.state.studentModelData.flagimg &&
-                          this.state.studentModelData.flagimg.base64 && (
+                        {this.state.staffModelData.flagimg &&
+                          this.state.staffModelData.flagimg.base64 && (
                             <img
-                              src={`${this.state.studentModelData.flagimg.base64}`}
+                              src={`${this.state.staffModelData.flagimg.base64}`}
                             />
                           )}
                       </div>
@@ -783,21 +881,21 @@ export default class Students extends Component {
         </Modal>
 
         <Modal
-          isOpen={this.state.studentViewModal}
-          toggle={this.toogleStudentView}
+          isOpen={this.state.staffViewModal}
+          toggle={this.toogleStaffView}
           className="modal-xl"
         >
-          <ModalHeader toggle={this.toogleStudentView}>
+          <ModalHeader toggle={this.toogleStaffView}>
             <hr className="line-info" />
             <h3>
               <span className="text-info">
                 {" "}
-                {this.state.studentModelData.name}{" "}
+                {this.state.staffModelData.name}{" "}
               </span>
             </h3>
           </ModalHeader>
           <ModalBody>
-            <UserItemCard student={this.state.studentModelData} />
+            <StaffItemCard staff={this.state.staffModelData} />
           </ModalBody>
         </Modal>
       </div>
@@ -805,7 +903,7 @@ export default class Students extends Component {
   }
 }
 
-function getStudentId(todo) {
+function getStaffId(todo) {
   if (!todo.ref) {
     return null;
   }

@@ -9,6 +9,52 @@
 .modal-xl .modal-content {
   background-color: #1e204d;
 }
+
+.ag-theme-balham-dark {
+  background-color: #171941 !important; 
+  font-size: 14px !important; 
+}
+.ag-theme-balham-dark .ag-root {
+  border: 1px solid #252858 !important; 
+}
+
+.ag-theme-balham-dark .ag-cell {
+  line-height: 36px !important; 
+}
+.ag-theme-balham-dark .ag-row {
+  border-color: #252858 !important; 
+  color:#fff !important; 
+}
+.ag-theme-balham-dark .ag-header {
+  background-color: #171941 !important; 
+  border-bottom: 1px solid #252858 !important; 
+}
+.ag-theme-balham-dark .ag-row-even {
+  background-color: #171941 !important; 
+}
+.ag-theme-balham-dark .ag-row-odd {
+  background-color: #1f2144 !important; 
+}
+
+.ag-theme-balham-dark input, .ag-theme-balham-dark select {
+  background-color: #333458 !important; 
+  color: #F5F5F5 !important; 
+  border-color: #4a4a4a !important; 
+  padding:5px;
+}
+
+
+.text-on-back {
+  
+  font-size: 4rem;
+}
+.text-on-back-sm {
+  position: relative;
+   
+    font-weight: 900;
+    color: rgba(255, 255, 255, 0.2) !important;
+  font-size: 3rem;
+}
 .todo-list {
   padding: 60px;
   padding-top: 10px;

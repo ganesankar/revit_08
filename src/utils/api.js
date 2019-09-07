@@ -57,6 +57,11 @@ const readAllStudents = () => {
     return response.json()
   })
 }
+const readStudent  = (todoId) => {
+  return fetch(`/.netlify/functions/students-read/${todoId}`).then((response) => {
+    return response.json()
+  })
+}
 
 const updateStudent = (studentId, data) => {
   return fetch(`/.netlify/functions/students-update/${studentId}`, {
@@ -86,6 +91,55 @@ const batchDeleteStudents = (studentIds) => {
   })
 }
 
+
+const createStaff = (data) => {
+  return fetch('/.netlify/functions/staffs-create', {
+    body: JSON.stringify(data),
+    method: 'POST'
+  }).then(response => {
+    return response.json()
+  })
+}
+
+const readAllStaffs = () => {
+  return fetch('/.netlify/functions/staffs-read-all').then((response) => {
+    return response.json()
+  })
+}
+const readStaff  = (todoId) => {
+  return fetch(`/.netlify/functions/staffs-read/${todoId}`).then((response) => {
+    return response.json()
+  })
+}
+
+const updateStaff = (staffId, data) => {
+  return fetch(`/.netlify/functions/staffs-update/${staffId}`, {
+    body: JSON.stringify(data),
+    method: 'POST'
+  }).then(response => {
+    return response.json()
+  })
+}
+
+const deleteStaff = (staffId) => {
+  return fetch(`/.netlify/functions/staffs-delete/${staffId}`, {
+    method: 'POST',
+  }).then(response => {
+    return response.json()
+  })
+}
+
+const batchDeleteStaffs = (staffIds) => {
+  return fetch(`/.netlify/functions/staffs-delete-batch`, {
+    body: JSON.stringify({
+      ids: staffIds
+    }),
+    method: 'POST'
+  }).then(response => {
+    return response.json()
+  })
+}
+
 export default {
   create: create,
   readAll: readAll,
@@ -94,7 +148,14 @@ export default {
   batchDelete: batchDeleteTodo,
   createStudent: createStudent,
   readAllStudents: readAllStudents,
+  readStudent:readStudent,
   updateStudent: updateStudent,
   deleteStudent: deleteStudent,
-  batchDeleteStudents: batchDeleteStudents
+  batchDeleteStudents: batchDeleteStudents,  
+  createStaff: createStaff,
+  readAllStaffs: readAllStaffs,
+  readStaff:readStaff,
+  updateStaff: updateStaff,
+  deleteStaff: deleteStaff,
+  batchDeleteStaffs: batchDeleteStaffs
 }

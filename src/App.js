@@ -12,6 +12,8 @@ import './App.css'
 
 import Home from "./views/Home";
 import Students from "./views/Students";
+import Student from "./views/Student";
+import Staffs from "./views/Staffs";
 
 export default class App extends Component {
   state = {
@@ -37,6 +39,8 @@ export default class App extends Component {
               <Switch>
                 <Route exact path="/" component={Home} />
                 <Route exact path="/students" component={Students} />
+                <Route exact path="/student/:sid" component={Student} />
+                <Route exact path="/staffs" component={Staffs} />
               </Switch>
             </div>
            

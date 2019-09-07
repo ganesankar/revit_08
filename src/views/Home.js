@@ -1,5 +1,6 @@
 import React, { Component } from 'react' 
 import { NavLink } from "react-router-dom";
+import GoogleLogin from 'react-google-login';
 import ContentEditable from './../components/ContentEditable'
 import SettingsMenu from './../components/SettingsMenu'
 import SettingsIcon from './../components/SettingsIcon'
@@ -19,6 +20,21 @@ export default class Home extends Component {
     // Fetch all todos
     
   }
+
+   responseGoogle = (response) => {
+    let googleData;
+    googleData = {
+      googleID: response.profileObj.googleId,
+      email: response.profileObj.email,
+      password: "",
+      username: response.profileObj.name,
+      firstname: response.profileObj.givenName,
+      lastname: response.profileObj.familyName,
+      avatar: response.profileObj.imageUrl,
+      accesstoken: response.accessToken
+    };
+    console.log(googleData);
+  }
   
   
  
@@ -32,6 +48,13 @@ export default class Home extends Component {
             <h3 className="d-none d-sm-block">
             JJCET 2008 IT BATCH COMMUNITY
             </h3>
+            <GoogleLogin
+    clientId="157852765565-21eh7v2tvqv5r7t8fg28o6073kqt3so3.apps.googleusercontent.com"
+    buttonText="Login"
+    onSuccess={this.responseGoogle}
+    onFailure={this.responseGoogle}
+    cookiePolicy={'single_host_origin'}
+  />
 			  <Nav className="nav-pills-info nav-pills-icons" pills>
                 <NavItem>
                   <NavLink               

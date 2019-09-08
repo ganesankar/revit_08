@@ -10,9 +10,9 @@ export default class FormGroupInput extends Component {
   }
 
   renderSwitch(param) {
-    const { colDef, value, data, type } = this.props;
-    switch(param) {
-      case 'text':
+  
+    switch (param) {
+      case "text":
         return (
           <Input
             type="text"
@@ -20,8 +20,8 @@ export default class FormGroupInput extends Component {
             name={this.props.name || ""}
             onChange={this.onFieldChange.bind(this)}
           />
-      );
-      case 'date':
+        );
+      case "date":
         return (
           <Input
             type="date"
@@ -29,8 +29,8 @@ export default class FormGroupInput extends Component {
             name={this.props.name || ""}
             onChange={this.onFieldChange.bind(this)}
           />
-      );
-      case 'number':
+        );
+      case "number":
         return (
           <Input
             type="number"
@@ -38,9 +38,19 @@ export default class FormGroupInput extends Component {
             name={this.props.name || ""}
             onChange={this.onFieldChange.bind(this)}
           />
-      );
+        );
+      case "textarea":
+        return (
+          <textarea
+            name={this.props.name || ""}
+            className="form-control"
+            onChange={this.onFieldChange.bind(this)}
+          >
+            {this.props.nameValue || ""}
+          </textarea>
+        );
       default:
-        return 'foo';
+        return "foo";
     }
   }
 
@@ -49,7 +59,7 @@ export default class FormGroupInput extends Component {
       <React.Fragment>
         <FormGroup>
           <label>{this.props.label || ""}</label>
-          {this.renderSwitch(this.props.type || 'text')}
+          {this.renderSwitch(this.props.type || "text")}
         </FormGroup>
       </React.Fragment>
     );

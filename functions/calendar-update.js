@@ -6,10 +6,11 @@ const client = new faunadb.Client({
   secret: process.env.FAUNADB_SERVER_SECRET
 })
 
-exports.handler = (event, context, callback) => {
-  const id = getId(event.path)
-  // console.log(`Function 'student-delete' invoked. delete id: ${id}`)
-  return client.query(q.Delete(q.Ref(`classes/students/${id}`)))
+exports.handler = (calendar, context, callback) => {
+  const data = JSON.parse(calendar.body)
+  const id = getId(calendar.path)
+  // console.log(`Function 'calendar-update' invoked. update id: ${id}`)
+  return client.query(q.Update(q.Ref(`classes/calendar/${id}`), {data}))
     .then((response) => {
       // console.log('success', response)
       return callback(null, {

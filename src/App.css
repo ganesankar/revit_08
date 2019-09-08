@@ -1,3 +1,21 @@
+body{
+  margin: 0;
+  font-family: Poppins,sans-serif;
+  font-size: .875rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #525f7f;
+  text-align: left;
+}
+.logoutBtn , .logoutBtn div, .logoutBtn span,
+.logoutBtn:hover , .logoutBtn div:hover, .logoutBtn span:hover {
+  
+  font-family: inherit !important;
+}
+.navbar .navbar-nav .nav-item .nav-link {
+  
+  line-height: 26px;
+}
 .modal-dialog.modal-xl {
   max-width: 900px;
   background: #16183e;
@@ -43,18 +61,25 @@
   padding:5px;
 }
 
-
+.navbar-brand { color:#ffffff !important}
+.user-card { min-height: 150px;} 
 .text-on-back {
-  
   font-size: 4rem;
+  margin: 0;
+  line-height: 48px;
 }
 .text-on-back-sm {
   position: relative;
-   
-    font-weight: 900;
-    color: rgba(255, 255, 255, 0.2) !important;
-  font-size: 3rem;
+  font-weight: 900;
+  color: rgba(255, 255, 255, 0.2) !important;
+  font-size: 2rem;
+  margin: 0;
+  line-height: 34px;
 }
+.profile-title {
+  margin: 5px 0 10px 0;
+}
+
 .todo-list {
   padding: 60px;
   padding-top: 10px;

@@ -6,12 +6,12 @@ const client = new faunadb.Client({
 })
 
 exports.handler = (article, context, callback) => {
-  console.log('Function `article-read-all` invoked')
+  // console.log('Function `article-read-all` invoked')
   return client.query(q.Paginate(q.Match(q.Ref('indexes/all_articles'))))
     .then((response) => {
       const articleRefs = response.data
-      console.log('Todo refs', articleRefs)
-      console.log(`${articleRefs.length} articles found`)
+      // console.log('Todo refs', articleRefs)
+      // console.log(`${articleRefs.length} articles found`)
       // create new query out of article refs. http://bit.ly/2LG3MLg
       const getAllTodoDataQuery = articleRefs.map((ref) => {
         return q.Get(ref)
@@ -24,7 +24,7 @@ exports.handler = (article, context, callback) => {
         })
       })
     }).catch((error) => {
-      console.log('error', error)
+      // console.log('error', error)
       return callback(null, {
         statusCode: 400,
         body: JSON.stringify(error)

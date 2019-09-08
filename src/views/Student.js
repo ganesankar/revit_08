@@ -1,11 +1,6 @@
 import React, { Component } from "react";
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
-import SettingsMenu from "./../components/SettingsMenu";
-import SettingsIcon from "./../components/SettingsIcon";
-import UserListCard from "./../components/list/userListCard";
 import UserItemCard from "./../components/item/userItemCard";
 import api from "./../utils/api";
-import sortByDate from "./../utils/sortByDate";
 import isLocalHost from "./../utils/isLocalHost";
 
 export default class Student extends Component {

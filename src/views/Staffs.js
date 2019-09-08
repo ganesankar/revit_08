@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import ReactDOM from "react-dom";
 import classnames from "classnames";
 import FileBase64 from "react-file-base64";
 import { ToastsContainer, ToastsStore } from "react-toasts";
@@ -8,16 +7,10 @@ import {
   Modal,
   ModalHeader,
   ModalBody,
-  ModalFooter,
   Row,
   Col,
   Card,
   CardBody,
-  Label,
-  FormGroup,
-  Form,
-  Input,
-  FormText,
   TabContent,
   TabPane,
   Nav,
@@ -194,13 +187,8 @@ export default class Staffs extends Component {
 
   saveStaff = () => {
     const { staffModelData } = this.state;
-
-    const newStaffArray = [
-      {
-        data: staffModelData,
-        ts: new Date().getTime() * 10000
-      }
-    ];
+    staffModelData.ts=  new Date().getTime() * 10000;
+    
 
     if (staffModelData.id) {
       api
@@ -365,17 +353,10 @@ export default class Staffs extends Component {
     const replistsByDate = replists.sort(sortOrder);
 
     return replistsByDate.map((replist, i) => {
-      const { data, ref } = replist;
+      const { data } = replist;
       const id = getStaffId(replist);
       // only show delete button after create API response returns
-      let deleteButton;
-      if (ref) {
-        deleteButton = (
-          <button data-id={id} onClick={this.deleteStaff}>
-            delete
-          </button>
-        );
-      }
+      
 
       return (
         <div key={i} className="col-12 col-md-6 col-sm-12 col-xl-4">
@@ -867,6 +848,7 @@ export default class Staffs extends Component {
                         {this.state.staffModelData.flagimg &&
                           this.state.staffModelData.flagimg.base64 && (
                             <img
+                            alt="staff"
                               src={`${this.state.staffModelData.flagimg.base64}`}
                             />
                           )}

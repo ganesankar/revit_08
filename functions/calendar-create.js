@@ -7,15 +7,15 @@ const client = new faunadb.Client({
 })
 
 /* export our lambda function as named "handler" export */
-exports.handler = (event, context, callback) => {
+exports.handler = (calendar, context, callback) => {
   /* parse the string body into a useable JS object */
-  const data = JSON.parse(event.body)
-  // console.log('Function `todo-create` invoked', data)
-  const todoItem = {
+  const data = JSON.parse(calendar.body)
+  // console.log('Function `calendar-create` invoked', data)
+  const calendarItem = {
     data: data
   }
   /* construct the fauna query */
-  return client.query(q.Create(q.Ref('classes/todos'), todoItem))
+  return client.query(q.Create(q.Ref('classes/calendar'), calendarItem))
     .then((response) => {
       // console.log('success', response)
       /* Success! return the response with statusCode 200 */

@@ -1,15 +1,20 @@
 import faunadb from 'faunadb'
-import getId from './utils/getId'
 
 const q = faunadb.query
 const client = new faunadb.Client({
   secret: process.env.FAUNADB_SERVER_SECRET
 })
 
-exports.handler = (event, context, callback) => {
-  const id = getId(event.path)
-  // console.log(`Function 'student-delete' invoked. delete id: ${id}`)
-  return client.query(q.Delete(q.Ref(`classes/students/${id}`)))
+exports.handler = (calendar, context, callback) => {
+  const data = JSON.parse(calendar.body)
+  // console.log('data', data)
+  // console.log('Function `calendar-delete-batch` invoked', data.ids)
+  // construct batch query from IDs
+  const deleteAllCompletedTodoQuery = data.ids.map((id) => {
+    return q.Delete(q.Ref(`classes/calendar/${id}`))
+  })
+  // Hit fauna with the query to delete the completed items
+  return client.query(deleteAllCompletedTodoQuery)
     .then((response) => {
       // console.log('success', response)
       return callback(null, {

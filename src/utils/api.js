@@ -140,6 +140,55 @@ const batchDeleteStaffs = (staffIds) => {
   })
 }
 
+
+
+const createArticle = (data) => {
+  return fetch('/.netlify/functions/articles-create', {
+    body: JSON.stringify(data),
+    method: 'POST'
+  }).then(response => {
+    return response.json()
+  })
+}
+
+const readAllArticles = () => {
+  return fetch('/.netlify/functions/articles-read-all').then((response) => {
+    return response.json()
+  })
+}
+const readArticle  = (todoId) => {
+  return fetch(`/.netlify/functions/articles-read/${todoId}`).then((response) => {
+    return response.json()
+  })
+}
+
+const updateArticle = (articleId, data) => {
+  return fetch(`/.netlify/functions/articles-update/${articleId}`, {
+    body: JSON.stringify(data),
+    method: 'POST'
+  }).then(response => {
+    return response.json()
+  })
+}
+
+const deleteArticle = (articleId) => {
+  return fetch(`/.netlify/functions/articles-delete/${articleId}`, {
+    method: 'POST',
+  }).then(response => {
+    return response.json()
+  })
+}
+
+const batchDeleteArticles = (articleIds) => {
+  return fetch(`/.netlify/functions/articles-delete-batch`, {
+    body: JSON.stringify({
+      ids: articleIds
+    }),
+    method: 'POST'
+  }).then(response => {
+    return response.json()
+  })
+}
 export default {
   create: create,
   readAll: readAll,
@@ -157,5 +206,11 @@ export default {
   readStaff:readStaff,
   updateStaff: updateStaff,
   deleteStaff: deleteStaff,
-  batchDeleteStaffs: batchDeleteStaffs
+  batchDeleteStaffs: batchDeleteStaffs,
+  createArticle: createArticle,
+  readAllArticles: readAllArticles,
+  readArticle:readArticle,
+  updateArticle: updateArticle,
+  deleteArticle: deleteArticle,
+  batchDeleteArticles: batchDeleteArticles
 }

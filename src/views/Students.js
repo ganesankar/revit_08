@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import ReactDOM from "react-dom";
 import classnames from "classnames";
 import FileBase64 from "react-file-base64";
 import { ToastsContainer, ToastsStore } from "react-toasts";
@@ -8,16 +7,10 @@ import {
   Modal,
   ModalHeader,
   ModalBody,
-  ModalFooter,
   Row,
   Col,
   Card,
   CardBody,
-  Label,
-  FormGroup,
-  Form,
-  Input,
-  FormText,
   TabContent,
   TabPane,
   Nav,
@@ -73,6 +66,7 @@ const userbase = {
 export default class Students extends Component {
   state = {
     todos: [],
+    cardview: false,
     context: { componentParent: this },
     student: {},
     studentModelData: { ...userbase },
@@ -183,13 +177,7 @@ export default class Students extends Component {
 
   saveStudent = () => {
     const { studentModelData } = this.state;
-
-    const newStudentArray = [
-      {
-        data: studentModelData,
-        ts: new Date().getTime() * 10000
-      }
-    ];
+    studentModelData.ts= new Date().getTime() * 10000;
 
     if (studentModelData.id) {
       api
@@ -293,6 +281,13 @@ export default class Students extends Component {
       studentViewModal: !studentViewModal
     });
   };
+  toogleGridTable = () => {
+    const { cardview } = this.state;
+    this.setState({
+      cardview: !cardview
+    });
+  };
+  
 
   onChange = e => {
     console.log("ose", e);
@@ -351,17 +346,10 @@ export default class Students extends Component {
     const replistsByDate = replists.sort(sortOrder);
 
     return replistsByDate.map((replist, i) => {
-      const { data, ref } = replist;
+      const { data } = replist;
       const id = getStudentId(replist);
       // only show delete button after create API response returns
-      let deleteButton;
-      if (ref) {
-        deleteButton = (
-          <button data-id={id} onClick={this.deleteStudent}>
-            delete
-          </button>
-        );
-      }
+     
 
       return (
         <div key={i} className="col-12 col-md-6 col-sm-12 col-xl-4">
@@ -372,6 +360,7 @@ export default class Students extends Component {
             viewLink={true}
             editLink={true}
             openUserModal={this.openUserModal}
+            openUserView={this.openUserView}
             editPath="/student/edit/"
             viewPath="/student/"
           />
@@ -395,19 +384,29 @@ export default class Students extends Component {
             <Col md="4"></Col>
             <Col md="4">
               <div className="text-right pt-5">
-                <Button color="danger" onClick={this.newStudentModal}>
-                  NEW
+                <Button className="btn-simple btn-round btn btn-primary" onClick={this.newStudentModal}>
+                <i className="fa fa-plus" aria-hidden="true"></i>
                 </Button>
-                <Button color="danger" onClick={this.download}>
-                  Download
+                <Button className="btn-simple btn-round btn btn-primary"  onClick={this.download}>
+                <i className="fa fa-download" aria-hidden="true"></i>
+                </Button>
+                <Button className="btn-simple btn-round btn btn-primary"  onClick={this.toogleGridTable}>
+                <i className="fa fa-vcard fa-table" aria-hidden="true"></i>
                 </Button>
               </div>
             </Col>
           </Row>
 
-          <div className="row">
-            {/*this.renderStudents()*/}
-            <Card className="card-coin card-plain">
+          
+           
+
+            {this.state.cardview ? (
+                    <div className="row">
+                       {this.renderStudents()}
+                    </div>
+                  ) : (
+                    <div className="row">
+                    <Card className="card-coin card-plain">
               <CardBody>
                 <div
                   style={{ height: "70vh", width: "100%" }}
@@ -424,8 +423,10 @@ export default class Students extends Component {
                   ></AgGridReact>
                 </div>
               </CardBody>
-            </Card>
-          </div>
+            </Card>  </div>
+                  )}
+            
+        
         </div>
 
         <Modal
@@ -769,6 +770,7 @@ export default class Students extends Component {
                         {this.state.studentModelData.flagimg &&
                           this.state.studentModelData.flagimg.base64 && (
                             <img
+                            alt="student"
                               src={`${this.state.studentModelData.flagimg.base64}`}
                             />
                           )}

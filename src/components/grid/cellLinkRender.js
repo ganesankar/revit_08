@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { NavLink } from "react-router-dom";
 
 export default class CellLinkRenderer extends Component {
   constructor(props) {
@@ -20,7 +19,7 @@ export default class CellLinkRenderer extends Component {
   }
 
   renderSwitch(param) {
-    const { colDef, value, data, context } = this.props;
+    const {   data } = this.props;
     switch (param) {
       case "action":
         return (
@@ -57,7 +56,7 @@ export default class CellLinkRenderer extends Component {
   }
 
   render() {
-    const { colDef, value, data, context } = this.props;
+    const { colDef } = this.props;
 
     return <span>{this.renderSwitch(colDef.field)}</span>;
   }

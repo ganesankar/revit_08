@@ -8,16 +8,16 @@ const client = new faunadb.Client({
 
 exports.handler = (article, context, callback) => {
   const id = getId(article.path)
-  console.log(`Function 'article-delete' invoked. delete id: ${id}`)
+  // console.log(`Function 'article-delete' invoked. delete id: ${id}`)
   return client.query(q.Delete(q.Ref(`classes/articles/${id}`)))
     .then((response) => {
-      console.log('success', response)
+      // console.log('success', response)
       return callback(null, {
         statusCode: 200,
         body: JSON.stringify(response)
       })
     }).catch((error) => {
-      console.log('error', error)
+      // console.log('error', error)
       return callback(null, {
         statusCode: 400,
         body: JSON.stringify(error)

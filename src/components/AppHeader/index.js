@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import {
-  Button,
+  
   Collapse,
   NavbarBrand,
   Navbar,
@@ -9,16 +9,18 @@ import {
   Nav,
   Container,
   Row,
-  Col,
-  Media
+  Col
 } from "reactstrap";
 
+import {GoogleLogin, GoogleLogout }  from "react-google-login";
 
 export default class AppHeader extends Component {
   constructor(props) {
     super(props);
     this.state = {
       collapseOpen: false,
+      userlogin: false,
+      userlogged: {},
       color: "navbar-transparent",
       left: false
     };
@@ -49,7 +51,12 @@ export default class AppHeader extends Component {
       });
     }
   };
-
+  toggleCollapse = () => {
+    document.documentElement.classList.toggle("nav-open");
+    this.setState({
+      collapseOpen: !this.state.collapseOpen
+    });
+  };
   onLogoutClick(e) {
     e.preventDefault();
     this.props.logoutUser();
@@ -66,9 +73,39 @@ export default class AppHeader extends Component {
   handleClose = () => {
     this.setState({ anchorEl: null });
   };
+
+  responseGoogle = response => {
+    
+    console.log(response);
+    let googleData;
+    googleData = {
+      googleID: response.profileObj.googleId,
+      email: response.profileObj.email,
+      password: "",
+      username: response.profileObj.name,
+      firstname: response.profileObj.givenName,
+      lastname: response.profileObj.familyName,
+      avatar: response.profileObj.imageUrl,
+      accesstoken: response.accessToken
+    };
+    this.setState({
+      userlogin: true,
+      userlogged: googleData,
+    });
+    
+    console.log(googleData);
+  };
+
+  logout = () => {
+   
+    this.setState({
+      userlogin: false,
+      userlogged: {},
+    });
+    
+  };
   render() {
-    const { showMenu } = this.props;
-    const showOrHide = showMenu ? "flex" : "none";
+    
     return (
       <Navbar
         className={"fixed-top " + this.state.color}
@@ -85,6 +122,7 @@ export default class AppHeader extends Component {
             >
               <span>REVIT </span>
             </NavbarBrand>
+           
             <button
               aria-expanded={this.state.collapseOpen}
               className="navbar-toggler navbar-toggler"
@@ -114,17 +152,18 @@ export default class AppHeader extends Component {
                     aria-expanded={this.state.collapseOpen}
                     className="navbar-toggler"
                     onClick={this.toggleCollapse}
-                  >
-                    <i className="tim-icons icon-simple-remove" />
+                  ><i className="fa fa-times" aria-hidden="true"></i>
                   </button>
                 </Col>
               </Row>
             </div>
             <Nav navbar>
+            
               <NavItem className="p-0">
                 <NavLink href="/">
                   <p className="">Home</p>
                 </NavLink>
+              </NavItem> <NavItem className="p-0">
                 <NavLink href="/students">
                   <p className="">Students</p>
                 </NavLink>
@@ -134,8 +173,43 @@ export default class AppHeader extends Component {
                   <p className="">Staffs</p>
                 </NavLink>
               </NavItem>
+              <NavItem className="p-0">
+                <NavLink href="/calendar">
+                  <p className="">Events</p>
+                </NavLink>
+              </NavItem>
+              <NavItem className="p-0">
+                <NavLink href="/articles">
+                  <p className="">Posts</p>
+                </NavLink>
+              </NavItem>
+              <NavItem className="p-0">
+            {this.state.userlogin ? (
+             <GoogleLogout
+             clientId="157852765565-21eh7v2tvqv5r7t8fg28o6073kqt3so3.apps.googleusercontent.com"
+             buttonText="Logout"
+             onLogoutSuccess={this.logout}
+             disabledStyle={true}
+             className="btn-neutral btn btn-default logoutBtn"
+           >  {this.state.userlogged.username} | Logout</GoogleLogout>
+            ) : (
+              <GoogleLogin
+              clientId="157852765565-21eh7v2tvqv5r7t8fg28o6073kqt3so3.apps.googleusercontent.com"
+              buttonText="Login"
+              className="btn-neutral btn btn-default logoutBtn"
+              onSuccess={this.responseGoogle}
+              onFailure={this.responseGoogle}
+              disabledStyle={true}
+              cookiePolicy={"single_host_origin"}
+            />
+            )}
+              </NavItem>
             </Nav>
           </Collapse>
+          <div className="float-right">
+
+          
+            </div>
         </Container>
       </Navbar>
     );

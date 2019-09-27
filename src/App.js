@@ -10,10 +10,11 @@ import Student from "./views/Student";
 import Staffs from "./views/Staffs";
 import Articles from "./views/Articles";
 import Calendar from "./views/Calendar";
+import Session from "./views/Session";
 
 export default class App extends Component {
   state = {
-    todos: [],
+   
     showMenu: false
   };
   componentDidMount() {
@@ -36,6 +37,7 @@ export default class App extends Component {
                   <Route exact path="/staffs" component={Staffs} />
                   <Route exact path="/calendar" component={Calendar} />
                   <Route exact path="/articles" component={Articles} />
+                  <Route exact path="/userlogged" component={Session} />
                 </Switch>
               </div>
             </div>

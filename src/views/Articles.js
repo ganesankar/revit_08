@@ -6,7 +6,6 @@ import {
   Modal,
   ModalHeader,
   ModalBody,
-  
   Row,
   Col,
   Card,
@@ -82,7 +81,7 @@ export default class Articles extends Component {
 
   saveArticle = () => {
     const { articleModelData } = this.state;
-    articleModelData.ts= new Date().getTime() * 10000;  
+    articleModelData.ts = new Date().getTime() * 10000;
 
     if (articleModelData.id) {
       api
@@ -196,7 +195,7 @@ export default class Articles extends Component {
     this.setState({ articleModelData });
   };
 
-  onEditorStateChange = (editorState )=> {
+  onEditorStateChange = editorState => {
     const { articleModelData } = this.state;
     articleModelData.description = editorState;
     this.setState({ articleModelData });
@@ -244,7 +243,6 @@ export default class Articles extends Component {
       const { data } = replist;
       const id = getArticleId(replist);
       // only show delete button after create API response returns
-     
 
       return (
         <Row key={i}>
@@ -291,7 +289,7 @@ export default class Articles extends Component {
             <Col md="4">
               <hr className="line-info" />
               <h2>
-               <span className="text-info">Category</span>
+                <span className="text-info">Category</span>
               </h2>
             </Col>
             <Col md="8">
@@ -348,7 +346,7 @@ export default class Articles extends Component {
                             editorClassName="editorClassName"
                             onEditorStateChange={this.onEditorStateChange}
                           /> */}
-                           <FormGroupInput
+                          <FormGroupInput
                             nameValue={this.state.articleModelData.description}
                             label="Title"
                             name="description"
@@ -376,9 +374,7 @@ export default class Articles extends Component {
                             onInputChange={this.onInputChange}
                           />
                         </Col>
-                        
                       </Row>
-                     
                     </Container>
                   </Col>{" "}
                   <Col md="3">
@@ -393,7 +389,8 @@ export default class Articles extends Component {
                       <div className="cmsImageDiv">
                         {this.state.articleModelData.flagimg &&
                           this.state.articleModelData.flagimg.base64 && (
-                            <img  alt="student"
+                            <img
+                              alt="student"
                               src={`${this.state.articleModelData.flagimg.base64}`}
                             />
                           )}

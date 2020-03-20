@@ -20,14 +20,22 @@ exports.handler = (event, context, callback) => {
       return client.query(getAllTodoDataQuery).then((ret) => {
         return callback(null, {
           statusCode: 200,
-          body: JSON.stringify(ret)
+          body: JSON.stringify(ret),
+          headers: {
+            "content-type": "application/json",
+            "Access-Control-Allow-Origin": "*"
+          }
         })
       })
     }).catch((error) => {
       // console.log('error', error)
       return callback(null, {
         statusCode: 400,
-        body: JSON.stringify(error)
+        body: JSON.stringify(error),
+          headers: {
+            "content-type": "application/json",
+            "Access-Control-Allow-Origin": "*"
+          }
       })
     })
 }

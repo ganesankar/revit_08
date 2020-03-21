@@ -1,15 +1,4 @@
 import React, { Component } from "react";
-import {
-  Collapse,
-  NavbarBrand,
-  Navbar,
-  NavItem,
-  NavLink,
-  Nav,
-  Container,
-  Row,
-  Col
-} from "reactstrap";
 
 import { ToastsContainer, ToastsStore } from "react-toasts";
 import api from "../../utils/api";
@@ -99,43 +88,52 @@ export default class AppHeader extends Component {
     });
   };
   render() {
+    const { userActivated } = this.state;
+    const { menu } = this.props;
     return (
       <nav class="border fixed split-nav">
         <div class="nav-brand">
           <h3>
-            <a href="/#">REVIT</a>
+            <a href="/">REVIT</a>
           </h3>
-          <GoogleLogin
-            clientId="157852765565-21eh7v2tvqv5r7t8fg28o6073kqt3so3.apps.googleusercontent.com"
-            buttonText="Login"
-            onSuccess={this.responseGoogle}
-            onFailure={this.responseGoogle}
-            cookiePolicy={"single_host_origin"}
-          />
         </div>
-        <div class="collapsible">
-          <input id="collapsible1" type="checkbox" name="collapsible1" />
-          <button>
-            <label for="collapsible1">
-              <div class="bar1"></div>
-              <div class="bar2"></div>
-              <div class="bar3"></div>
-            </label>
-          </button>
-          <div class="collapsible-body">
-            <ul class="inline">
-              <li>
-                <a href="/">Home</a>
-              </li>
-              <li>
-                <a href="/students">students</a>
-              </li>
-              <li>
-                <a href="/staffs">staffs</a>
-              </li>
-            </ul>
+
+        {userActivated ? (
+          <div class="collapsible">
+            <input id="collapsible1" type="checkbox" name="collapsible1" />
+            <button>
+              <label for="collapsible1">
+                <div class="bar1"></div>
+                <div class="bar2"></div>
+                <div class="bar3"></div>
+              </label>
+            </button>
+            <div class="collapsible-body">
+              <ul class="inline">
+                {menu &&
+                  menu.map((m, i) => {
+                    return (
+                      <div key={i} className="sm-12 md-6 lg-6 col">
+                        <li>
+                          <a href={m.path}> {m.title}</a>
+                        </li>
+                      </div>
+                    );
+                  })}
+              </ul>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="pull-right margin">
+            <GoogleLogin
+              clientId="157852765565-21eh7v2tvqv5r7t8fg28o6073kqt3so3.apps.googleusercontent.com"
+              buttonText="Login"
+              onSuccess={this.responseGoogle}
+              onFailure={this.responseGoogle}
+              cookiePolicy={"single_host_origin"}
+            />
+          </div>
+        )}
       </nav>
     );
   }

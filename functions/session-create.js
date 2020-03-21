@@ -39,16 +39,16 @@ exports.handler = (session, context, callback) => {
           console.log(" ret 2");
           const firstlist = ret;
           const finalList = [];
-
+          
           firstlist.forEach(function(item) {
             if (
               Number(item.data.googleID) == Number(sessionItem.data.googleID)
             ) {
-              console.log("  id must be ", Object.values(item.ref)[0].id);
-              const findId = Number(Object.values(item.ref)[0].id) || 0;
-              console.log("item");
+              console.log('  id must be ',Object.values(item.ref)[0].id);
+              const findId =  Number(Object.values(item.ref)[0].id) || 0;
+                console.log("item");
               // console.log(item.ref);
-
+              
               if (findId > 0) {
                 console.log(" ??", findId);
                 const oldData = item.data;
@@ -63,10 +63,6 @@ exports.handler = (session, context, callback) => {
                     console.log("update success", response);
                     return callback(null, {
                       statusCode: 200,
-                      headers: {
-                        "content-type": "application/json",
-                        "Access-Control-Allow-Origin": "*"
-                      },
                       body: JSON.stringify(response)
                     });
                   })
@@ -74,14 +70,10 @@ exports.handler = (session, context, callback) => {
                     console.log("updateerror", error);
                     return callback(null, {
                       statusCode: 400,
-                      headers: {
-                        "content-type": "application/json",
-                        "Access-Control-Allow-Origin": "*"
-                      },
                       body: JSON.stringify(error)
                     });
                   });
-              } else {
+              }else{
                 console.log(" ");
                 console.log("user not  found");
                 sessionItem.data.firstlogin = new Date().getTime() * 10000;
@@ -93,10 +85,6 @@ exports.handler = (session, context, callback) => {
                     /* Success! return the response with statusCode 200 */
                     return callback(null, {
                       statusCode: 200,
-                      headers: {
-                        "content-type": "application/json",
-                        "Access-Control-Allow-Origin": "*"
-                      },
                       body: JSON.stringify(response)
                     });
                   })
@@ -105,10 +93,6 @@ exports.handler = (session, context, callback) => {
                     /* Error! return the error with statusCode 400 */
                     return callback(null, {
                       statusCode: 400,
-                      headers: {
-                        "content-type": "application/json",
-                        "Access-Control-Allow-Origin": "*"
-                      },
                       body: JSON.stringify(error)
                     });
                   });
@@ -118,6 +102,8 @@ exports.handler = (session, context, callback) => {
 
           console.log("findId");
           console.log(findId);
+
+          
         } else {
           console.log(" ");
           console.log("user not  found");
@@ -130,10 +116,6 @@ exports.handler = (session, context, callback) => {
               /* Success! return the response with statusCode 200 */
               return callback(null, {
                 statusCode: 200,
-                headers: {
-                  "content-type": "application/json",
-                  "Access-Control-Allow-Origin": "*"
-                },
                 body: JSON.stringify(response)
               });
             })
@@ -142,10 +124,6 @@ exports.handler = (session, context, callback) => {
               /* Error! return the error with statusCode 400 */
               return callback(null, {
                 statusCode: 400,
-                headers: {
-                  "content-type": "application/json",
-                  "Access-Control-Allow-Origin": "*"
-                },
                 body: JSON.stringify(error)
               });
             });
@@ -158,10 +136,6 @@ exports.handler = (session, context, callback) => {
       // console.log('error', error)
       return callback(null, {
         statusCode: 400,
-        headers: {
-          "content-type": "application/json",
-          "Access-Control-Allow-Origin": "*"
-        },
         body: JSON.stringify(error)
       });
     });

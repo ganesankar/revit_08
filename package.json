@@ -1,14 +1,12 @@
 {
-  "name": "netlify-fauna",
+  "name": "revitui",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
     "ag-grid-community": "^21.2.1",
     "ag-grid-react": "^21.2.1",
-    "bootstrap": "^4.3.1",
     "classnames": "^2.2.6",
     "draft-js": "^0.11.0",
-    "faunadb": "^2.5.2",
     "laco": "^1.2.1",
     "laco-react": "^1.1.0",
     "react": "^16.7.0",
@@ -22,16 +20,9 @@
     "reactstrap": "^8.0.1"
   },
   "scripts": {
-    "bootstrap": "node ./scripts/bootstrap-fauna-database.js",
     "docs": "md-magic --path '**/*.md' --ignore 'node_modules'",
-    "checkForFaunaKey": "node ./scripts/check-for-fauna-key.js",
-    "start": "npm-run-all   start:app ",
-    "start:app": "react-scripts start",
-    "start:server": "netlify-lambda serve functions -c ./webpack.config.js",
-    "prebuild": "echo 'setup faunaDB' && npm run bootstrap",
-    "build": "npm-run-all --parallel build:**",
-    "build:app": "react-scripts build",
-    "build:functions": "netlify-lambda build functions -c ./webpack.config.js",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom"
   },
   "devDependencies": {

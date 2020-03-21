@@ -31,88 +31,33 @@ import sortByDate from "./../utils/sortByDate";
 import isLocalHost from "./../utils/isLocalHost";
 
 export default class Students extends Component {
-  state = {
-    todos: [],
-    cardview: true,
-    context: { componentParent: this },
-    student: {},
-    studentModal: false,
-    studentViewModal: false,
-    showMenu: false,
-    iconTabs: 1,
-    textTabs: 4,
-    columnDefs: [
-      {
-        headerName: "Edit",
-        field: "action",
-        sortable: false,
-        filter: false,
-        cellRenderer: "CellLinkRenderer",
-        width: 60,
-        pinned: "left"
-      },
-      {
-        headerName: "Name",
-        field: "name",
-        sortable: true,
-        filter: "agTextColumnFilter",
-        cellRenderer: "CellLinkRenderer",
-        pinned: "left"
-      },
-      {
-        headerName: "SPR No",
-        field: "spr",
-        width: 110,
-        filter: "agNumberColumnFilter"
-      },
-      {
-        headerName: "Nick Name",
-        field: "othername",
-        filter: "agTextColumnFilter"
-      },
-      {
-        headerName: "Current Location",
-        field: "location",
-        sortable: true,
-        filter: "agTextColumnFilter"
-      },
-      {
-        headerName: "Native ",
-        field: "native",
-        sortable: true,
-        filter: "agTextColumnFilter"
-      },
-      {
-        headerName: "DOB ",
-        field: "dob",
-        sortable: true
+  constructor() {
+    super();
+    this.state = {
+      users: [],
+      usersFiltered: [],
+      cardview: true,
+      context: { componentParent: this },
+      student: {},
+      studentModal: false,
+      studentViewModal: false,
+      showMenu: false,
+      iconTabs: 1,
+      textTabs: 4,
+      columnDefs: [],
+
+      frameworkComponents: {
+        CellLinkRenderer
       }
-    ],
-    getRowHeight: function(params) {
-      return 40;
-    },
-    defaultColDef: {
-      sortable: true,
-      filter: true
-    },
-    frameworkComponents: {
-      CellLinkRenderer
-    }
-  };
+    };
+    this.filterList = this.filterList.bind(this);
+  }
+
   componentDidMount() {
-    // Fetch all todos
     api.readAllStudents().then(users => {
       console.log("users", users);
       if (users.message === "unauthorized") {
-        if (isLocalHost()) {
-          alert(
-            "FaunaDB key is not unauthorized. Make sure you set it in terminal session where you ran `npm start`. Visit http://bit.ly/set-fauna-key for more info"
-          );
-        } else {
-          alert(
-            "FaunaDB key is not unauthorized. Verify the key `FAUNADB_SERVER_SECRET` set in Netlify enviroment variables is correct"
-          );
-        }
+        alert(" Error");
         return false;
       }
       const optimisedData = [];
@@ -129,6 +74,7 @@ export default class Students extends Component {
         );
         this.setState({
           users: content,
+          usersFiltered: content,
           gridData: optimisedData
         });
       } else {
@@ -139,6 +85,20 @@ export default class Students extends Component {
       }
     });
   }
+
+  filterList(e) {
+    let updateList = this.state.users;
+    updateList = updateList.filter(item => {
+      return (
+        item.name.toLowerCase().search(e.target.value.toLowerCase()) !== -1
+      );
+    });
+
+    this.setState({
+      usersFiltered: updateList
+    });
+  }
+
   toggle = () => {
     const { studentModal } = this.state;
     this.setState({
@@ -171,49 +131,6 @@ export default class Students extends Component {
           ToastsStore.error(`Profile Creation Failed!`);
         });
     }
-  };
-  deleteStudent = e => {
-    const { users } = this.state;
-    const userId = e.target.dataset.id;
-
-    // Optimistically remove user from UI
-    const filteredStudents = users.reduce(
-      (acc, current) => {
-        const currentId = getStudentId(current);
-        if (currentId === userId) {
-          // save item being removed for rollback
-          acc.rollbackStudent = current;
-          return acc;
-        }
-        // filter deleted user out of the users list
-        acc.optimisticState = acc.optimisticState.concat(current);
-        return acc;
-      },
-      {
-        rollbackStudent: {},
-        optimisticState: []
-      }
-    );
-
-    this.setState({
-      users: filteredStudents.optimisticState
-    });
-
-    // Make API request to delete user
-    api
-      .deleteStudent(userId)
-      .then(() => {
-        console.log(`deleted user id ${userId}`);
-      })
-      .catch(e => {
-        console.log(`There was an error removing ${userId}`, e);
-        // Add item removed back to list
-        this.setState({
-          users: filteredStudents.optimisticState.concat(
-            filteredStudents.rollbackStudent
-          )
-        });
-      });
   };
 
   openUserModal = id => {
@@ -292,65 +209,59 @@ export default class Students extends Component {
   download = () => {
     console.log("coming soon");
   };
-  renderStudents() {
-    const { users } = this.state;
 
-    if (!users || !users.length) {
-      // Loading State here
-      return null;
-    }
-
-    const timeStampKey = "ts";
-    const orderBy = "desc"; // or `asc`
-    const sortOrder = sortByDate(timeStampKey, orderBy);
-
-    return users.map((user, i) => {
-      return (
-        <div key={i} className="sm-12 md-6 lg-6 col">
-          <UserListCard
-            user={user}
-            viewLink={true}
-            editLink={true}
-            openUserModal={this.openUserModal}
-            openUserView={this.openUserView}
-            editPath="/student/edit/"
-            viewPath="/student/"
-          />
-        </div>
-      );
-    });
-  }
   render() {
     return (
       <div className="app">
         <ToastsContainer store={ToastsStore} />
         <div className="container">
-          <Row>
-            <Col md="4">
-              <hr className="line-info" />
-              <h1>Students List</h1>
-            </Col>
-            <Col md="4"></Col>
-            <Col md="4">
-              <div className="text-right pt-5">
-                <Button
-                  className="btn-simple btn-round btn btn-primary"
+          <div className="row">
+            <div className="sm-12 md-6 col">
+              <h1 className="padding-small">Students List</h1>
+            </div>
+            <div className="sm-12 md-6  col text-right">
+              <div className="row flex-center child-borders">
+                <input
+                  type="text"
+                  onChange={this.filterList}
+                  className="input-block margin"
+                />
+                <button
+                  type="button"
+                  className="btn-simple btn-round btn btn-primary margin"
                   onClick={this.download}
                 >
                   <i className="fa fa-download" aria-hidden="true"></i>
-                </Button>
-                <Button
-                  className="btn-simple btn-round btn btn-primary"
+                </button>
+                <button
+                  type="button"
+                  className="btn-simple btn-round btn btn-primary margin"
                   onClick={this.toogleGridTable}
                 >
                   <i className="fa fa-vcard fa-table" aria-hidden="true"></i>
-                </Button>
+                </button>
               </div>
-            </Col>
-          </Row>
+            </div>
+          </div>
 
           {this.state.cardview ? (
-            <div className="row">{this.renderStudents()}</div>
+            <div className="row">
+              {this.state.usersFiltered.map((user, i) => {
+                return (
+                  <div key={i} className="sm-12 md-6 lg-6 col">
+                    <UserListCard
+                      user={user}
+                      viewLink={true}
+                      editLink={true}
+                      openUserModal={this.openUserModal}
+                      openUserView={this.openUserView}
+                      editPath="/student/edit/"
+                      viewPath="/student/"
+                    />
+                  </div>
+                );
+              })}
+            </div>
           ) : (
             <div className="row">
               <Card className="card-coin card-plain">
@@ -381,7 +292,6 @@ export default class Students extends Component {
           className="modal-xl"
         >
           <ModalHeader toggle={this.toggle}>
-            <hr className="line-info" />
             <h3>
               Students Edit{" "}
               <span className="text-info">
@@ -431,19 +341,18 @@ export default class Students extends Component {
         <Modal
           isOpen={this.state.studentViewModal}
           toggle={this.toogleStudentView}
-          className="modal-xl"
+          className="modal-xl border "
         >
           <ModalHeader toggle={this.toogleStudentView}>
-            <hr className="line-info" />
             <h3>
               <span className="text-info">
-                {" "}
-                {/*this.state.studentModelData.name*/}{" "}
+                {this.state.studentModelData &&
+                  `${this.state.studentModelData.roll} : ${this.state.studentModelData.name}`}
               </span>
             </h3>
           </ModalHeader>
           <ModalBody>
-            <UserItemCard student={this.state.studentModelData} />
+            <UserItemCard user={this.state.studentModelData} />
           </ModalBody>
         </Modal>
       </div>

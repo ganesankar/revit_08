@@ -1,24 +1,165 @@
-body {
-  margin: 0;
-
-  font-size: 0.875rem;
-  font-weight: 400;
-  line-height: 1.5;
-  color: #fff;
-  text-align: left;
-}
-
 body,
 html,
 #root {
   margin: 0;
   padding: 0;
 }
-
-.card.sm .card-body {
+body {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #fff;
+  text-align: left;
+  padding-top: 90px !important;
+}
+.card .image-top,
+.card .image-bottom,
+.card img {
+  /* border: 0; */
+  /* border-radius: 0; */
+  border-bottom-left-radius: 15px 255px;
+  border-bottom-right-radius: 225px 15px;
+  border-top-left-radius: 255px 15px;
+  border-top-right-radius: 15px 225px;
+  border: 2px solid #ffffff;
+}
+.img50 {
+  width: 64px;
+}
+img {
+  border: 2px solid #ffffff;
+}
+.img300 {
+  width: 100%;
+  max-width: 300px;
+}
+nav ul.inline li a {
+  font-size: 1rem;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  padding: 10px 0;
+}
+h1 {
+  font-size: 2rem !important;
+}
+h4 {
+  font-size: 1.2rem !important;
+}
+.modal h5,
+.modal .modal-subtitle {
+  color: #e7ff65;
+  padding: 0;
+}
+button.btn-white {
+  border-color: white;
+  color: white;
+}
+.card.card-stu {
+  background-color: #ffffff05;
+}
+.card.card-stu .card-body .card-subtitle,
+.card.card-stu .card-body h5 {
+  color: #73efff;
+}
+.card.card-stu .card-body {
   padding: 0rem;
 }
-
+.modal {
+  visibility: visible;
+  opacity: 1;
+}
+.modal.modal-dialog {
+  margin: 0 auto;
+}
+.modal-dialog {
+  position: relative;
+  width: auto;
+  margin: 0.5rem;
+  pointer-events: none;
+  margin: 0 auto;
+}
+.modal-dialog.modal-xl {
+  background: #186d4f !important;
+  border-color: #ffffff !important;
+}
+.modal-content {
+  position: relative;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  width: 100%;
+  pointer-events: auto;
+  background-color: transparent;
+  background-clip: padding-box;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 0.3rem;
+  outline: 0;
+}
+.modal-xl .modal-content {
+  background-color: transparent !important;
+}
+.modal-header {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-align: start;
+  align-items: flex-start;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  padding: 10px 30px !important;
+  border: none;
+}
+.modal .modal-body {
+  transition: all 235ms ease-in-out 0s;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  background: transparent;
+  border: none;
+  left: 0;
+  padding: 1.25rem;
+  position: relative;
+  top: auto;
+  -webkit-transform: initial;
+  transform: initial;
+}
+.modal-body {
+  position: relative;
+  -ms-flex: 1 1 auto;
+  flex: 1 1 auto;
+  padding: 1rem;
+}
+.modal-footer {
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+  padding: 0.75rem;
+  border-top: 1px solid #dee2e6;
+  border-bottom-right-radius: calc(0.3rem - 1px);
+  border-bottom-left-radius: calc(0.3rem - 1px);
+}
+.modal.fade .modal-dialog {
+  transition: -webkit-transform 0.3s ease-out;
+  transition: transform 0.3s ease-out;
+  transition: transform 0.3s ease-out, -webkit-transform 0.3s ease-out;
+  -webkit-transform: translate(0, -50px);
+  transform: translate(0, -50px);
+}
+.modal.show .modal-dialog {
+  -webkit-transform: none;
+  transform: none;
+}
 .logoutBtn,
 .logoutBtn div,
 .logoutBtn span,

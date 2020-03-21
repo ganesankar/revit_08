@@ -14,7 +14,49 @@ import Session from "./views/Session";
 
 export default class App extends Component {
   state = {
-    showMenu: false
+    showMenu: false,
+    routes: [
+      {
+        path: "/",
+        title: "Home",
+        loginReq: false,
+        loginActive: false,
+        component: Home,
+        id: 3
+      },
+      {
+        path: "/Students",
+        title: "Students",
+        loginReq: true,
+        loginActive: true,
+        component: Students,
+        id: 5
+      },
+      {
+        path: "/Staffs",
+        title: "Staffs",
+        loginReq: true,
+        loginActive: true,
+        component: Staffs,
+        id: 7
+      },
+      {
+        path: "/Articles",
+        title: "Articles",
+        loginReq: true,
+        loginActive: true,
+        component: Articles,
+        id: 9
+      },
+      {
+        path: "/Calendar",
+        title: "Calendar",
+        loginReq: true,
+        loginActive: true,
+        component: Calendar,
+        id: 33
+      }
+    ]
   };
   componentDidMount() {
     // Fetch all todos
@@ -23,20 +65,21 @@ export default class App extends Component {
   render() {
     return (
       <div className="app bgrgreen">
-        <AppHeader />
+        <AppHeader menu={this.state.routes} />
 
         <BrowserRouter>
           <div className="landing-page ">
             <div className=" wrapper">
               <div className="main-panel">
                 <Switch>
-                  <Route exact path="/" component={Home} />
-                  <Route exact path="/students" component={Students} />
-                  <Route exact path="/student/:sid" component={Student} />
-                  <Route exact path="/staffs" component={Staffs} />
-                  <Route exact path="/calendar" component={Calendar} />
-                  <Route exact path="/articles" component={Articles} />
-                  <Route exact path="/userlogged" component={Session} />
+                  {this.state.routes.map(route => (
+                    <Route
+                      key={route.id}
+                      path={route.path}
+                      exact
+                      component={route.component}
+                    />
+                  ))}
                 </Switch>
               </div>
             </div>

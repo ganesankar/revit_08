@@ -52,29 +52,6 @@ export default class AppHeader extends Component {
       userlogged: data
     });
   };
-  changeColor = () => {
-    if (
-      document.documentElement.scrollTop > 99 ||
-      document.body.scrollTop > 99
-    ) {
-      this.setState({
-        color: "bg-info"
-      });
-    } else if (
-      document.documentElement.scrollTop < 100 ||
-      document.body.scrollTop < 100
-    ) {
-      this.setState({
-        color: "navbar-transparent"
-      });
-    }
-  };
-  toggleCollapse = () => {
-    document.documentElement.classList.toggle("nav-open");
-    this.setState({
-      collapseOpen: !this.state.collapseOpen
-    });
-  };
 
   responseGoogle = response => {
     console.log(response);
@@ -126,6 +103,13 @@ export default class AppHeader extends Component {
           <h3>
             <a href="/#">REVIT</a>
           </h3>
+          <GoogleLogin
+            clientId="658977310896-knrl3gka66fldh83dao2rhgbblmd4un9.apps.googleusercontent.com"
+            buttonText="Login"
+            onSuccess={this.responseGoogle}
+            onFailure={this.responseGoogle}
+            cookiePolicy={"single_host_origin"}
+          />
         </div>
         <div class="collapsible">
           <input id="collapsible1" type="checkbox" name="collapsible1" />

@@ -30,46 +30,12 @@ import api from "./../utils/api";
 import sortByDate from "./../utils/sortByDate";
 import isLocalHost from "./../utils/isLocalHost";
 
-const userbase = {
-  roll: 0,
-  spr: 0,
-  designation: "",
-  verified: true,
-  name: "",
-  email: "",
-  othername: "",
-  dob: "",
-  anniversary: "",
-  married: false,
-  native: "",
-  location: "",
-  work: "",
-  social: {
-    facebook: "",
-    instagram: "",
-    linkedin: "",
-    twitter: "",
-    blogger: "",
-    skype: "",
-    whatsapp: "",
-    github: "",
-    google: "",
-    medium: "",
-    microsoft: "",
-    pinterest: "",
-    quora: "",
-    youtube: ""
-  },
-  url: "",
-  flagimg: ""
-};
 export default class Students extends Component {
   state = {
     todos: [],
-    cardview: false,
+    cardview: true,
     context: { componentParent: this },
     student: {},
-    studentModelData: { ...userbase },
     studentModal: false,
     studentViewModal: false,
     showMenu: false,
@@ -135,8 +101,9 @@ export default class Students extends Component {
   };
   componentDidMount() {
     // Fetch all todos
-    api.readAllStudents().then(replists => {
-      if (replists.message === "unauthorized") {
+    api.readAllStudents().then(users => {
+      console.log("users", users);
+      if (users.message === "unauthorized") {
         if (isLocalHost()) {
           alert(
             "FaunaDB key is not unauthorized. Make sure you set it in terminal session where you ran `npm start`. Visit http://bit.ly/set-fauna-key for more info"
@@ -149,20 +116,24 @@ export default class Students extends Component {
         return false;
       }
       const optimisedData = [];
-      if (replists.length > 0) {
-        replists.forEach(function(item, index) {
+      if (users.length > 0) {
+        console.log("users", users);
+        users.forEach(function(item, index) {
           let itemis = item.data;
           itemis.act = index;
           itemis.id = getStudentId(item);
           optimisedData.push(itemis);
         });
+        const content = optimisedData.sort((a, b) =>
+          a.name > b.name ? 1 : b.name > a.name ? -1 : 0
+        );
         this.setState({
-          replists: replists,
+          users: content,
           gridData: optimisedData
         });
       } else {
         this.setState({
-          replists: [],
+          users: [],
           gridData: []
         });
       }
@@ -177,7 +148,7 @@ export default class Students extends Component {
 
   saveStudent = () => {
     const { studentModelData } = this.state;
-    studentModelData.ts= new Date().getTime() * 10000;
+    studentModelData.ts = new Date().getTime() * 10000;
 
     if (studentModelData.id) {
       api
@@ -202,19 +173,19 @@ export default class Students extends Component {
     }
   };
   deleteStudent = e => {
-    const { replists } = this.state;
-    const replistId = e.target.dataset.id;
+    const { users } = this.state;
+    const userId = e.target.dataset.id;
 
-    // Optimistically remove replist from UI
-    const filteredStudents = replists.reduce(
+    // Optimistically remove user from UI
+    const filteredStudents = users.reduce(
       (acc, current) => {
         const currentId = getStudentId(current);
-        if (currentId === replistId) {
+        if (currentId === userId) {
           // save item being removed for rollback
           acc.rollbackStudent = current;
           return acc;
         }
-        // filter deleted replist out of the replists list
+        // filter deleted user out of the users list
         acc.optimisticState = acc.optimisticState.concat(current);
         return acc;
       },
@@ -225,40 +196,30 @@ export default class Students extends Component {
     );
 
     this.setState({
-      replists: filteredStudents.optimisticState
+      users: filteredStudents.optimisticState
     });
 
-    // Make API request to delete replist
+    // Make API request to delete user
     api
-      .deleteStudent(replistId)
+      .deleteStudent(userId)
       .then(() => {
-        console.log(`deleted replist id ${replistId}`);
+        console.log(`deleted user id ${userId}`);
       })
       .catch(e => {
-        console.log(`There was an error removing ${replistId}`, e);
+        console.log(`There was an error removing ${userId}`, e);
         // Add item removed back to list
         this.setState({
-          replists: filteredStudents.optimisticState.concat(
+          users: filteredStudents.optimisticState.concat(
             filteredStudents.rollbackStudent
           )
         });
       });
   };
 
-  newStudentModal = () => {
-    const studentItem = { ...userbase };
-
-    this.setState({
-      studentModal: true,
-      studentModelData: studentItem
-    });
-  };
   openUserModal = id => {
-    
-    console.log('openUserModal' , id);
+    console.log("openUserModal", id);
     const studentItem = this.state.gridData.find(o => o.id === id);
     if (Object.keys(studentItem.social).length === 0) {
-      studentItem.social = { ...userbase.social };
     }
     console.log(studentItem);
     this.setState({
@@ -267,7 +228,7 @@ export default class Students extends Component {
     });
   };
   openUserView = id => {
-    console.log('openUserView' , id);
+    console.log("openUserView", id);
     const { studentViewModal } = this.state;
     const studentItem = this.state.gridData.find(o => o.id === id);
     this.setState({
@@ -287,7 +248,6 @@ export default class Students extends Component {
       cardview: !cardview
     });
   };
-  
 
   onChange = e => {
     console.log("ose", e);
@@ -333,9 +293,9 @@ export default class Students extends Component {
     console.log("coming soon");
   };
   renderStudents() {
-    const { replists } = this.state;
+    const { users } = this.state;
 
-    if (!replists || !replists.length) {
+    if (!users || !users.length) {
       // Loading State here
       return null;
     }
@@ -343,20 +303,12 @@ export default class Students extends Component {
     const timeStampKey = "ts";
     const orderBy = "desc"; // or `asc`
     const sortOrder = sortByDate(timeStampKey, orderBy);
-    const replistsByDate = replists.sort(sortOrder);
 
-    return replistsByDate.map((replist, i) => {
-      const { data } = replist;
-      const id = getStudentId(replist);
-      // only show delete button after create API response returns
-     
-
+    return users.map((user, i) => {
       return (
-        <div key={i} className="col-12 col-md-6 col-sm-12 col-xl-4">
+        <div key={i} className="sm-12 md-6 lg-6 col">
           <UserListCard
-            html={data.name}
-            profileData={data}
-            profileRef={id}
+            user={user}
             viewLink={true}
             editLink={true}
             openUserModal={this.openUserModal}
@@ -376,57 +328,51 @@ export default class Students extends Component {
           <Row>
             <Col md="4">
               <hr className="line-info" />
-              <h1>
-                Students List
-                <br /> <span className="text-info">from the class </span>
-              </h1>
+              <h1>Students List</h1>
             </Col>
             <Col md="4"></Col>
             <Col md="4">
               <div className="text-right pt-5">
-                <Button className="btn-simple btn-round btn btn-primary" onClick={this.newStudentModal}>
-                <i className="fa fa-plus" aria-hidden="true"></i>
+                <Button
+                  className="btn-simple btn-round btn btn-primary"
+                  onClick={this.download}
+                >
+                  <i className="fa fa-download" aria-hidden="true"></i>
                 </Button>
-                <Button className="btn-simple btn-round btn btn-primary"  onClick={this.download}>
-                <i className="fa fa-download" aria-hidden="true"></i>
-                </Button>
-                <Button className="btn-simple btn-round btn btn-primary"  onClick={this.toogleGridTable}>
-                <i className="fa fa-vcard fa-table" aria-hidden="true"></i>
+                <Button
+                  className="btn-simple btn-round btn btn-primary"
+                  onClick={this.toogleGridTable}
+                >
+                  <i className="fa fa-vcard fa-table" aria-hidden="true"></i>
                 </Button>
               </div>
             </Col>
           </Row>
 
-          
-           
-
-            {this.state.cardview ? (
-                    <div className="row">
-                       {this.renderStudents()}
-                    </div>
-                  ) : (
-                    <div className="row">
-                    <Card className="card-coin card-plain">
-              <CardBody>
-                <div
-                  style={{ height: "70vh", width: "100%" }}
-                  className="ag-theme-balham-dark"
-                >
-                  <AgGridReact
-                    columnDefs={this.state.columnDefs}
-                    defaultColDef={this.state.defaultColDef}
-                    floatingFilter={true}
-                    rowData={this.state.gridData}
-                    getRowHeight={this.state.getRowHeight}
-                    context={this.state.context}
-                    frameworkComponents={this.state.frameworkComponents}
-                  ></AgGridReact>
-                </div>
-              </CardBody>
-            </Card>  </div>
-                  )}
-            
-        
+          {this.state.cardview ? (
+            <div className="row">{this.renderStudents()}</div>
+          ) : (
+            <div className="row">
+              <Card className="card-coin card-plain">
+                <CardBody>
+                  <div
+                    style={{ height: "70vh", width: "100%" }}
+                    className="ag-theme-balham-dark"
+                  >
+                    <AgGridReact
+                      columnDefs={this.state.columnDefs}
+                      defaultColDef={this.state.defaultColDef}
+                      floatingFilter={true}
+                      rowData={this.state.gridData}
+                      getRowHeight={this.state.getRowHeight}
+                      context={this.state.context}
+                      frameworkComponents={this.state.frameworkComponents}
+                    ></AgGridReact>
+                  </div>
+                </CardBody>
+              </Card>{" "}
+            </div>
+          )}
         </div>
 
         <Modal
@@ -440,7 +386,7 @@ export default class Students extends Component {
               Students Edit{" "}
               <span className="text-info">
                 {" "}
-                {this.state.studentModelData.name}{" "}
+                {/*this.state.studentModelData.name */}{" "}
               </span>
             </h3>
           </ModalHeader>
@@ -454,309 +400,7 @@ export default class Students extends Component {
             >
               <Container fluid>
                 <Row>
-                  <Col md="9">
-                    <Nav className="nav-tabs-info" role="tablist" tabs>
-                      <NavItem>
-                        <NavLink
-                          className={classnames({
-                            active: this.state.textTabs === 4
-                          })}
-                          onClick={e => this.toggleTabs(e, "textTabs", 4)}
-                        >
-                          Profile
-                        </NavLink>
-                      </NavItem>
-                      <NavItem>
-                        <NavLink
-                          className={classnames({
-                            active: this.state.textTabs === 5
-                          })}
-                          onClick={e => this.toggleTabs(e, "textTabs", 5)}
-                        >
-                          Social
-                        </NavLink>
-                      </NavItem>
-                    </Nav>
-                    <TabContent
-                      className="tab-space"
-                      activeTab={"link" + this.state.textTabs}
-                    >
-                      <TabPane tabId="link4">
-                        <Container fluid>
-                          <Row>
-                            <Col md="6">
-                              <FormGroupInput
-                                nameValue={this.state.studentModelData.roll}
-                                label="Roll No"
-                                name="roll"
-                                type="number"
-                                onInputChange={this.onInputChange}
-                              />
-                            </Col>
-                            <Col md="6">
-                              <FormGroupInput
-                                nameValue={this.state.studentModelData.spr}
-                                label="SPR No"
-                                name="spr"
-                                type="number"
-                                onInputChange={this.onInputChange}
-                              />
-                            </Col>
-                          </Row>
-                          <Row>
-                            <Col md="6">
-                              <FormGroupInput
-                                nameValue={this.state.studentModelData.name}
-                                label="Name"
-                                name="name"
-                                onInputChange={this.onInputChange}
-                              />
-                            </Col>
-                            <Col md="6">
-                              <FormGroupInput
-                                nameValue={
-                                  this.state.studentModelData.othername
-                                }
-                                label="Nick Name"
-                                name="othername"
-                                onInputChange={this.onInputChange}
-                              />
-                            </Col>
-                          </Row>
-                          <Row>
-                            <Col md="6">
-                              <FormGroupInput
-                                nameValue={this.state.studentModelData.email}
-                                label="E Mail"
-                                name="email"
-                                onInputChange={this.onInputChange}
-                              />
-                            </Col>
-                          </Row>
-                          <Row>
-                            <Col md="6">
-                              <FormGroupInput
-                                nameValue={this.state.studentModelData.work}
-                                label="Work"
-                                name="work"
-                                onInputChange={this.onInputChange}
-                              />
-                            </Col>
-                            <Col md="6">
-                              <FormGroupInput
-                                nameValue={
-                                  this.state.studentModelData.designation
-                                }
-                                label="Designation"
-                                name="designation"
-                                onInputChange={this.onInputChange}
-                              />
-                            </Col>
-                          </Row>
-                          <Row>
-                            <Col md="6">
-                              <FormGroupInput
-                                nameValue={this.state.studentModelData.dob}
-                                label="Date of Birth"
-                                name="dob"
-                                type="date"
-                                onInputChange={this.onInputChange}
-                              />
-                            </Col>
-                            <Col md="6">
-                              <FormGroupInput
-                                nameValue={
-                                  this.state.studentModelData.anniversary
-                                }
-                                label="Anniversary"
-                                name="anniversary"
-                                type="date"
-                                onInputChange={this.onInputChange}
-                              />
-                            </Col>
-                          </Row>
-
-                          <Row>
-                            <Col md="6">
-                              <FormGroupInput
-                                nameValue={this.state.studentModelData.native}
-                                label="Native"
-                                name="native"
-                                onInputChange={this.onInputChange}
-                              />
-                            </Col>
-                            <Col md="6">
-                              <FormGroupInput
-                                nameValue={this.state.studentModelData.location}
-                                label="Current Location"
-                                name="location"
-                                onInputChange={this.onInputChange}
-                              />
-                            </Col>
-                          </Row>
-                        </Container>
-                      </TabPane>
-                      <TabPane tabId="link5">
-                        <Container fluid>
-                          <Row>
-                            <Col md="6">
-                              <FormGroupInput
-                                nameValue={
-                                  this.state.studentModelData.social.facebook
-                                }
-                                label="Facebook"
-                                name="facebook"
-                                onInputChange={this.onInputSocialChange}
-                              />
-                            </Col>
-                            <Col md="6">
-                              <FormGroupInput
-                                nameValue={
-                                  this.state.studentModelData.social.instagram
-                                }
-                                label="instagram"
-                                name="instagram"
-                                onInputChange={this.onInputSocialChange}
-                              />
-                            </Col>
-                          </Row>
-                          <Row>
-                            <Col md="6">
-                              <FormGroupInput
-                                nameValue={
-                                  this.state.studentModelData.social.twitter
-                                }
-                                label="twitter"
-                                name="twitter"
-                                onInputChange={this.onInputSocialChange}
-                              />
-                            </Col>
-                            <Col md="6">
-                              <FormGroupInput
-                                nameValue={
-                                  this.state.studentModelData.social.blogger
-                                }
-                                label="Blog/ Website"
-                                name="blogger"
-                                onInputChange={this.onInputSocialChange}
-                              />
-                            </Col>
-                          </Row>
-                          <Row>
-                            <Col md="6">
-                              <FormGroupInput
-                                nameValue={
-                                  this.state.studentModelData.social.skype
-                                }
-                                label="skype"
-                                name="skype"
-                                onInputChange={this.onInputSocialChange}
-                              />
-                            </Col>
-                            <Col md="6">
-                              <FormGroupInput
-                                nameValue={
-                                  this.state.studentModelData.social.whatsapp
-                                }
-                                label="whatsapp"
-                                name="whatsapp"
-                                onInputChange={this.onInputSocialChange}
-                              />
-                            </Col>
-                          </Row>
-                          <Row>
-                            <Col md="6">
-                              <FormGroupInput
-                                nameValue={
-                                  this.state.studentModelData.social.github
-                                }
-                                label="github"
-                                name="github"
-                                onInputChange={this.onInputSocialChange}
-                              />
-                            </Col>
-                            <Col md="6">
-                              <FormGroupInput
-                                nameValue={
-                                  this.state.studentModelData.social.google
-                                }
-                                label="google"
-                                name="google"
-                                onInputChange={this.onInputSocialChange}
-                              />
-                            </Col>
-                          </Row>
-                          <Row>
-                            <Col md="6">
-                              <FormGroupInput
-                                nameValue={
-                                  this.state.studentModelData.social.medium
-                                }
-                                label="medium"
-                                name="medium"
-                                onInputChange={this.onInputSocialChange}
-                              />
-                            </Col>
-                            <Col md="6">
-                              <FormGroupInput
-                                nameValue={
-                                  this.state.studentModelData.social.microsoft
-                                }
-                                label="microsoft"
-                                name="microsoft"
-                                onInputChange={this.onInputSocialChange}
-                              />
-                            </Col>
-                          </Row>
-
-                          <Row>
-                            <Col md="6">
-                              <FormGroupInput
-                                nameValue={
-                                  this.state.studentModelData.social.pinterest
-                                }
-                                label="pinterest"
-                                name="pinterest"
-                                onInputChange={this.onInputSocialChange}
-                              />
-                            </Col>
-                            <Col md="6">
-                              <FormGroupInput
-                                nameValue={
-                                  this.state.studentModelData.social.quora
-                                }
-                                label="quora"
-                                name="quora"
-                                onInputChange={this.onInputSocialChange}
-                              />
-                            </Col>
-                          </Row>
-                          <Row>
-                            <Col md="6">
-                              <FormGroupInput
-                                nameValue={
-                                  this.state.studentModelData.social.linkedin
-                                }
-                                label="linkedin"
-                                name="linkedin"
-                                onInputChange={this.onInputSocialChange}
-                              />
-                            </Col>
-                            <Col md="6">
-                              <FormGroupInput
-                                nameValue={
-                                  this.state.studentModelData.social.youtube
-                                }
-                                label="youtube"
-                                name="youtube"
-                                onInputChange={this.onInputSocialChange}
-                              />
-                            </Col>
-                          </Row>
-                        </Container>
-                      </TabPane>
-                    </TabContent>
-                  </Col>{" "}
+                  <Col md="9"></Col>{" "}
                   <Col md="3">
                     <div className="cmsUploadimage">
                       Upload City Cover Image.
@@ -767,13 +411,13 @@ export default class Students extends Component {
                     </div>
                     <Card raised>
                       <div className="cmsImageDiv">
-                        {this.state.studentModelData.flagimg &&
+                        {/*this.state.studentModelData.flagimg &&
                           this.state.studentModelData.flagimg.base64 && (
                             <img
-                            alt="student"
+                              alt="student"
                               src={`${this.state.studentModelData.flagimg.base64}`}
                             />
-                          )}
+                          )*/}
                       </div>
                     </Card>
                   </Col>
@@ -794,7 +438,7 @@ export default class Students extends Component {
             <h3>
               <span className="text-info">
                 {" "}
-                {this.state.studentModelData.name}{" "}
+                {/*this.state.studentModelData.name*/}{" "}
               </span>
             </h3>
           </ModalHeader>

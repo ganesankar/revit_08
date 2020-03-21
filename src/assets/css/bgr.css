@@ -1,0 +1,27 @@
+.bgr1s {
+  background-repeat: repeat;
+  background-image: url(/static/media/green.png);
+  min-height: 100vh;
+}
+body {
+  background: #437268;
+  color: #fff;
+}
+
+body {
+  background: #437268 url(../images/green.png) fixed top left repeat;
+  background-size: cover;
+  color: #fff;
+  min-height: 100vh;
+}
+nav {
+  background-color: #ffffff1c;
+}
+nav a {
+  color: #4fc8ff;
+}
+
+a:visited {
+  color: #4fc8ff;
+  text-decoration: none;
+}

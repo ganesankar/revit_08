@@ -14,7 +14,6 @@ import Session from "./views/Session";
 
 export default class App extends Component {
   state = {
-   
     showMenu: false
   };
   componentDidMount() {
@@ -23,7 +22,7 @@ export default class App extends Component {
 
   render() {
     return (
-      <div className="app">
+      <div className="app bgrgreen">
         <AppHeader />
 
         <BrowserRouter>

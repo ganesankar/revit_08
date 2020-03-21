@@ -24,32 +24,29 @@ export default class AppHeader extends Component {
       userlogged: {},
       color: "navbar-transparent",
       left: false,
-      sessionUser : window.sessionStorage.getItem('revitGoogleID') || '' 
-
+      sessionUser: window.sessionStorage.getItem("revitGoogleID") || ""
     };
   }
   componentDidMount() {
     // attach event listeners
     // window.sessionStorage.setItem("revitGoogleID", googleData.googleID);
     //window.sessionStorage.getItem('revitUserID')
-    const alreadylogged = window.sessionStorage.getItem('revitGoogleID') || '' ;
-    
-   
-    
+    const alreadylogged = window.sessionStorage.getItem("revitGoogleID") || "";
+
     window.addEventListener("scroll", this.changeColor);
   }
   componentWillUnmount() {
     // remove event listeners
     window.removeEventListener("scroll", this.changeColor);
   }
-  
-  getrecordId = (todo) => {
+
+  getrecordId = todo => {
     if (!todo.ref) {
       return null;
     }
     return todo.ref["@ref"].id;
   };
-  updateUserLogin = (data) => {
+  updateUserLogin = data => {
     this.setState({
       userlogin: true,
       userlogged: data
@@ -91,28 +88,28 @@ export default class AppHeader extends Component {
       lastname: response.profileObj.familyName,
       avatar: response.profileObj.imageUrl,
       accesstoken: response.accessToken,
-      lastlogin : new Date().getTime() * 10000,
-      total:0
+      lastlogin: new Date().getTime() * 10000,
+      total: 0
     };
     this.setState({
       userlogin: true,
       userlogged: googleData
     });
-   
+
     api
-        .createSession(googleData)
-        .then(response => {
-          const returnId = this.getrecordId(response);
-          if(returnId){
-            window.sessionStorage.setItem("revituserID", returnId);
-            window.sessionStorage.setItem("revitGoogleID", googleData.googleID);
-          }
-          ToastsStore.success(`User Login Updated!`);
-        })
-        .catch(e => {
-          console.log("An API error occurred", e);
-          ToastsStore.error(`User Login Update Failed!`);
-        });
+      .createSession(googleData)
+      .then(response => {
+        const returnId = this.getrecordId(response);
+        if (returnId) {
+          window.sessionStorage.setItem("revituserID", returnId);
+          window.sessionStorage.setItem("revitGoogleID", googleData.googleID);
+        }
+        ToastsStore.success(`User Login Updated!`);
+      })
+      .catch(e => {
+        console.log("An API error occurred", e);
+        ToastsStore.error(`User Login Update Failed!`);
+      });
     console.log(googleData);
   };
 
@@ -124,112 +121,36 @@ export default class AppHeader extends Component {
   };
   render() {
     return (
-      <Navbar
-        className={"fixed-top " + this.state.color}
-        color-on-scroll="100"
-        expand="lg"
-      >
-        <Container>
-          <div className="navbar-translate">
-            <NavbarBrand
-              data-placement="bottom"
-              to="/"
-              rel="noopener noreferrer"
-              title=""
-            >
-              <span>REVIT </span>
-            </NavbarBrand>
-
-            <button
-              aria-expanded={this.state.collapseOpen}
-              className="navbar-toggler navbar-toggler"
-              onClick={this.toggleCollapse}
-            >
-              <span className="navbar-toggler-bar bar1" />
-              <span className="navbar-toggler-bar bar2" />
-              <span className="navbar-toggler-bar bar3" />
-            </button>
+      <nav class="border fixed split-nav">
+        <div class="nav-brand">
+          <h3>
+            <a href="/#">REVIT</a>
+          </h3>
+        </div>
+        <div class="collapsible">
+          <input id="collapsible1" type="checkbox" name="collapsible1" />
+          <button>
+            <label for="collapsible1">
+              <div class="bar1"></div>
+              <div class="bar2"></div>
+              <div class="bar3"></div>
+            </label>
+          </button>
+          <div class="collapsible-body">
+            <ul class="inline">
+              <li>
+                <a href="/">Home</a>
+              </li>
+              <li>
+                <a href="/students">students</a>
+              </li>
+              <li>
+                <a href="/staffs">staffs</a>
+              </li>
+            </ul>
           </div>
-          <Collapse
-            className={"justify-content-end " + this.state.collapseOut}
-            navbar
-            isOpen={this.state.collapseOpen}
-            onExiting={this.onCollapseExiting}
-            onExited={this.onCollapseExited}
-          >
-            <div className="navbar-collapse-header">
-              <Row>
-                <Col className="collapse-brand" xs="6">
-                  <a href="#pablo" onClick={e => e.preventDefault()}>
-                    REVIT
-                  </a>
-                </Col>
-                <Col className="collapse-close text-right" xs="6">
-                  <button
-                    aria-expanded={this.state.collapseOpen}
-                    className="navbar-toggler"
-                    onClick={this.toggleCollapse}
-                  >
-                    <i className="fa fa-times" aria-hidden="true"></i>
-                  </button>
-                </Col>
-              </Row>
-            </div>
-            <Nav navbar>
-              <NavItem className="p-0">
-                <NavLink href="/">
-                  <p className="">Home</p>
-                </NavLink>
-              </NavItem>{" "}
-              <NavItem className="p-0">
-                <NavLink href="/students">
-                  <p className="">Students</p>
-                </NavLink>
-              </NavItem>
-              <NavItem className="p-0">
-                <NavLink href="/staffs">
-                  <p className="">Staffs</p>
-                </NavLink>
-              </NavItem>
-              <NavItem className="p-0">
-                <NavLink href="/calendar">
-                  <p className="">Events</p>
-                </NavLink>
-              </NavItem>
-              <NavItem className="p-0">
-                <NavLink href="/articles">
-                  <p className="">Posts</p>
-                </NavLink>
-              </NavItem>
-              <NavItem className="p-0">
-                {this.state.userlogin ? (
-                  <GoogleLogout
-                    clientId="157852765565-21eh7v2tvqv5r7t8fg28o6073kqt3so3.apps.googleusercontent.com"
-                    buttonText="Logout"
-                    onLogoutSuccess={this.logout}
-                    disabledStyle={true}
-                    className="btn-neutral btn btn-default logoutBtn"
-                  >
-                    {" "}
-                    {this.state.userlogged.username} | Logout
-                  </GoogleLogout>
-                ) : (
-                  <GoogleLogin
-                    clientId="157852765565-21eh7v2tvqv5r7t8fg28o6073kqt3so3.apps.googleusercontent.com"
-                    buttonText="Login"
-                    className="btn-neutral btn btn-default logoutBtn"
-                    onSuccess={this.responseGoogle}
-                    onFailure={this.responseGoogle}
-                    disabledStyle={true}
-                    cookiePolicy={"single_host_origin"}
-                  />
-                )}
-              </NavItem>
-            </Nav>
-          </Collapse>
-          <div className="float-right"></div>
-        </Container>
-      </Navbar>
+        </div>
+      </nav>
     );
   }
 }

@@ -66,7 +66,7 @@ exports.handler = (session, context, callback) => {
           headers: {
             "content-type": "application/json",
             "Access-Control-Allow-Origin": "*"
-          }
+          },
                       body: JSON.stringify(response)
                     });
                   })
@@ -77,7 +77,7 @@ exports.handler = (session, context, callback) => {
           headers: {
             "content-type": "application/json",
             "Access-Control-Allow-Origin": "*"
-          }
+          },
                       body: JSON.stringify(error)
                     });
                   });
@@ -96,7 +96,7 @@ exports.handler = (session, context, callback) => {
           headers: {
             "content-type": "application/json",
             "Access-Control-Allow-Origin": "*"
-          }
+          },
                       body: JSON.stringify(response)
                     });
                   })
@@ -108,7 +108,7 @@ exports.handler = (session, context, callback) => {
           headers: {
             "content-type": "application/json",
             "Access-Control-Allow-Origin": "*"
-          }
+          },
                       body: JSON.stringify(error)
                     });
                   });
@@ -135,7 +135,7 @@ exports.handler = (session, context, callback) => {
           headers: {
             "content-type": "application/json",
             "Access-Control-Allow-Origin": "*"
-          }
+          },
                 body: JSON.stringify(response)
               });
             })
@@ -147,7 +147,7 @@ exports.handler = (session, context, callback) => {
           headers: {
             "content-type": "application/json",
             "Access-Control-Allow-Origin": "*"
-          }
+          },
                 body: JSON.stringify(error)
               });
             });

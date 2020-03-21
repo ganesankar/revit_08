@@ -21,6 +21,7 @@ export default class AppHeader extends Component {
     this.state = {
       collapseOpen: false,
       userlogin: false,
+      userActivated: false,
       userlogged: {},
       color: "navbar-transparent",
       left: false,
@@ -76,6 +77,7 @@ export default class AppHeader extends Component {
     api
       .createSession(googleData)
       .then(response => {
+        console.log("response", response);
         const returnId = this.getrecordId(response);
         if (returnId) {
           window.sessionStorage.setItem("revituserID", returnId);
@@ -104,7 +106,7 @@ export default class AppHeader extends Component {
             <a href="/#">REVIT</a>
           </h3>
           <GoogleLogin
-            clientId="658977310896-knrl3gka66fldh83dao2rhgbblmd4un9.apps.googleusercontent.com"
+            clientId="157852765565-21eh7v2tvqv5r7t8fg28o6073kqt3so3.apps.googleusercontent.com"
             buttonText="Login"
             onSuccess={this.responseGoogle}
             onFailure={this.responseGoogle}

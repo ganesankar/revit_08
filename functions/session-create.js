@@ -63,6 +63,10 @@ exports.handler = (session, context, callback) => {
                     console.log("update success", response);
                     return callback(null, {
                       statusCode: 200,
+          headers: {
+            "content-type": "application/json",
+            "Access-Control-Allow-Origin": "*"
+          }
                       body: JSON.stringify(response)
                     });
                   })
@@ -70,6 +74,10 @@ exports.handler = (session, context, callback) => {
                     console.log("updateerror", error);
                     return callback(null, {
                       statusCode: 400,
+          headers: {
+            "content-type": "application/json",
+            "Access-Control-Allow-Origin": "*"
+          }
                       body: JSON.stringify(error)
                     });
                   });
@@ -85,6 +93,10 @@ exports.handler = (session, context, callback) => {
                     /* Success! return the response with statusCode 200 */
                     return callback(null, {
                       statusCode: 200,
+          headers: {
+            "content-type": "application/json",
+            "Access-Control-Allow-Origin": "*"
+          }
                       body: JSON.stringify(response)
                     });
                   })
@@ -93,6 +105,10 @@ exports.handler = (session, context, callback) => {
                     /* Error! return the error with statusCode 400 */
                     return callback(null, {
                       statusCode: 400,
+          headers: {
+            "content-type": "application/json",
+            "Access-Control-Allow-Origin": "*"
+          }
                       body: JSON.stringify(error)
                     });
                   });
@@ -116,6 +132,10 @@ exports.handler = (session, context, callback) => {
               /* Success! return the response with statusCode 200 */
               return callback(null, {
                 statusCode: 200,
+          headers: {
+            "content-type": "application/json",
+            "Access-Control-Allow-Origin": "*"
+          }
                 body: JSON.stringify(response)
               });
             })
@@ -124,6 +144,10 @@ exports.handler = (session, context, callback) => {
               /* Error! return the error with statusCode 400 */
               return callback(null, {
                 statusCode: 400,
+          headers: {
+            "content-type": "application/json",
+            "Access-Control-Allow-Origin": "*"
+          }
                 body: JSON.stringify(error)
               });
             });
@@ -136,6 +160,10 @@ exports.handler = (session, context, callback) => {
       // console.log('error', error)
       return callback(null, {
         statusCode: 400,
+          headers: {
+            "content-type": "application/json",
+            "Access-Control-Allow-Origin": "*"
+          }
         body: JSON.stringify(error)
       });
     });
